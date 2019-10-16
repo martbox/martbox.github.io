@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+xmlns="http://www.bond.co.uk/CustomLabels_1.0"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.bond.co.uk/CustomLabels_1.0" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<xsd:complexType name="labelType">
+	<xsd:simpleContent>
+    			<xsd:extension base="xsd:string">
+    		  		<xsd:attribute name="language" type="xsd:language" use="required">
+    		  			<xsd:annotation><xsd:documentation>Language code for this label (e.g. 'en' for english)</xsd:documentation></xsd:annotation>
+    		  		</xsd:attribute>
+    			</xsd:extension>
+  		</xsd:simpleContent>
+</xsd:complexType>
+
+<xsd:complexType name="CustomLabelType">
+	<xsd:annotation>
+	<xsd:documentation>Represents a named multi-lingual label. The text for at least one language must be specified in a child 'label' element.
+	</xsd:documentation>
+	</xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="label" minOccurs="1" maxOccurs="unbounded" type="labelType" />
+	</xsd:sequence>
+	<xsd:attribute name="configName" type="xsd:string" use="required">
+	<xsd:annotation>
+	<xsd:documentation>The name that widget code will use to refer to this custom label
+	</xsd:documentation>
+	</xsd:annotation>
+	</xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="CustomLabelsType">
+<xsd:annotation>
+<xsd:documentation>
+Must contains a list of 'customLabel' elements. These are installed as Adapt multi-names for reference
+by code used to display widgets correctly for a given language. 
+</xsd:documentation>
+</xsd:annotation>
+<xsd:sequence>
+<xsd:element name="customLabel" minOccurs="1" maxOccurs="unbounded" type="CustomLabelType"></xsd:element>
+</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:element name="CustomLabels" type="CustomLabelsType">
+</xsd:element>
+
+
+
+</xsd:schema>

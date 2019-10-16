@@ -1,0 +1,65 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="../lib/bootstrap-3.3/css/bootstrap.css" />
+<link type="text/css" rel="stylesheet" href="../lib/bootstrap-3.3/css/bootstrap-theme.css" />
+<link type="text/css" rel="stylesheet" href="../lib/font-awesome/font-awesome.min.css" />
+<meta http-equiv="Access-Control-Allow-Origin" content="https://www.w3.org,http://www.w3.org">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+This xml editor validates against <a href="play.xsd" target="_blank">this</a> xml schema.
+
+<div id="editor" class="editorPane"></div>
+<div id="xsdEditor" class="editorPane"></div>
+
+<!-- 3rd party libs -->
+<script src="../lib/jquery-1.12.0/jquery.js" ></script>
+<script src="../lib/bootstrap-3.3/js/bootstrap.js" ></script>
+
+<!-- app code -->
+<script src="mbx-xonomy.js" ></script>
+<script src="xs-docspec.js" ></script>
+<script src="xs-parser.js" ></script>
+<script src="xml-editor.js" ></script>
+
+<script type="text/javascript">
+function start() { 
+   var initialXML="<list xmlns='myNS'><item label='one'/><item label='two'/><item label='two'/></list>";
+/*
+   //renders a new XMLEditor iframe inside '#editor' div, using play.xsd as schema and initialXML as content
+   var editor = new XMLEditor({
+	   parentEl:document.getElementById("editor"), 
+	   id:"editor1",
+	   onload:function(editor){		   
+		   editor.setXSDContentFrom("play.xsd");
+		   if(!editor.loadFromLocalStorage()) {
+		     console.log("No xml in local storage, using default initial content");
+		     editor.setXMLContent(initialXML);
+		     editor.renderEditor();
+		   }
+	   }
+   });
+*/
+   //renders a new XMLEditor iframe inside '#xsdEditor' div using XMLSchema.xsd as schema and play.xsd as content
+
+   var xsdEditor = new XMLEditor({
+	     parentEl:document.getElementById("xsdEditor"),
+	     id:"editor2",
+	     onload:function(editor){
+	       editor.setXSDContentFrom("XMLSchema.xsd");
+	       if(!editor.loadFromLocalStorage()) {
+	         console.log("No xsd in local storage, using default xsd content in play.xsd");
+	         editor.setXMLContentFrom("play.xsd");
+	         editor.renderEditor();
+	       }
+	     }
+	   });
+
+}
+
+start();
+</script>
+</body>
+
+</html>

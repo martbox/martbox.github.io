@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+xmlns="http://www.bond.co.uk/StudioSettings_1.0"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.bond.co.uk/StudioSettings_1.0" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<xsd:simpleType name="ValueType">
+	<xsd:restriction base="xsd:string">
+		<xsd:enumeration value="STRING"></xsd:enumeration>
+		<xsd:enumeration value="INTEGER"></xsd:enumeration>
+		<xsd:enumeration value="LONG"></xsd:enumeration>
+		<xsd:enumeration value="BOOLEAN"></xsd:enumeration>
+	</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="StudioSettingType">
+	<xsd:sequence>
+		<xsd:element type="xsd:long" name="profileid" minOccurs="0" maxOccurs="1"/>
+		<xsd:element type="xsd:long" name="userid" minOccurs="0" maxOccurs="1"/>
+		<xsd:element type="xsd:string" name="value" minOccurs="1" maxOccurs="1"/>
+	</xsd:sequence>
+	<xsd:attribute type="xsd:string" name="key" use="required"/>
+	<xsd:attribute type="ValueType" name="valueType" use="required"/>
+</xsd:complexType>
+
+<xsd:complexType name="StudioSettingsType">
+	<xsd:sequence>
+		<xsd:element name="studiosetting" minOccurs="1" maxOccurs="unbounded" type="StudioSettingType"></xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:element name="StudioSettings" type="StudioSettingsType">
+</xsd:element>
+
+
+</xsd:schema>

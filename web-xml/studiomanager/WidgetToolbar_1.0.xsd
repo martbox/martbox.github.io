@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+xmlns="http://www.bond.co.uk/WidgetToolbar_1.0"
+xmlns:abs="http://www.bond.co.uk/AbstractXMLWidget_2.0"
+xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+xmlns:m="http://www.bond.co.uk/Menu_1.0"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.bond.co.uk/WidgetToolbar_1.0" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<xsd:import namespace="http://www.bond.co.uk/AbstractXMLWidget_2.0" schemaLocation="AbstractXMLWidget_2.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/WidgetEntityQuery_1.0" schemaLocation="WidgetEntityQuery_1.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/Menu_1.0" schemaLocation="../domain/Menu_1.0.xsd"></xsd:import>
+
+
+
+<xsd:simpleType name="OperatorType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:restriction base="xsd:string">
+		<xsd:enumeration value="EQUAL"></xsd:enumeration>
+		<xsd:enumeration value="NOT_EQUAL"></xsd:enumeration>
+		<xsd:enumeration value="LESS_THAN"></xsd:enumeration>
+		<xsd:enumeration value="GREATER_THAN"></xsd:enumeration>
+		<xsd:enumeration value="EQUAL_OR_GREATER_THAN"></xsd:enumeration>
+		<xsd:enumeration value="EQUAL_OR_LESS_THAN"></xsd:enumeration>
+	</xsd:restriction>
+</xsd:simpleType>
+
+
+<!-- toolbar item types.. -->
+
+<!-- abstract type inherited by all toolbar item types -->
+<xsd:complexType name="AbstractControlType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="abs:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+	</xsd:sequence>
+</xsd:complexType>
+
+<!-- abstract type inherited by toolbar item types with an optional caption -->
+<xsd:complexType name="OptionalCaptionType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractControlType">
+			<xsd:sequence>
+				<xsd:group ref="abs:MultilingualLabelElement" minOccurs="0" maxOccurs="1"></xsd:group>
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>	
+</xsd:complexType>
+
+<!-- abstract type inherited by toolbar item types with a required caption -->
+<xsd:complexType name="RequiredCaptionType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractControlType">
+			<xsd:sequence>
+				<xsd:group ref="abs:MultilingualLabelElement" minOccurs="1" maxOccurs="1"></xsd:group>
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>	
+</xsd:complexType>
+
+<xsd:complexType name="AdaptMenuType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="OptionalCaptionType">
+			<xsd:attribute name="configName" use="required" type="m:MenuName"></xsd:attribute>
+  			<xsd:attribute name="iconFile" use="optional" type="abs:IconFileNameType">
+	  			<xsd:annotation><xsd:documentation>
+						Optionally set an icon file for this menu control. Use 'auto' to see
+						the icon already assigned to the menu or a default icon if not found.
+						</xsd:documentation></xsd:annotation>
+	  			</xsd:attribute>  
+		</xsd:extension>
+	</xsd:complexContent>  			
+</xsd:complexType>
+
+<xsd:complexType name="CheckboxType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="OptionalCaptionType">
+			<xsd:attribute name="paramName" use="required"></xsd:attribute>
+  			<xsd:attribute name="checkedOperator" use="required" type="OperatorType"></xsd:attribute>
+  			<xsd:attribute name="checkedValue" use="required"></xsd:attribute> 
+		</xsd:extension>
+	</xsd:complexContent>		
+</xsd:complexType>
+
+<xsd:complexType name="CustomMenuType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="RequiredCaptionType">
+			<xsd:sequence>
+				<xsd:group ref="abs:ActionMenu_BeforeData"></xsd:group>
+			</xsd:sequence>
+  			<xsd:attribute name="iconFile" use="optional" type="abs:IconFileNameType">
+	  			<xsd:annotation><xsd:documentation>
+					Optionally set an icon file for this menu control. Use 'auto' to use
+					 a standard default icon.
+				</xsd:documentation></xsd:annotation>
+	  		</xsd:attribute>	
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="DatePickerType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractControlType">
+			<xsd:attribute name="paramName" use="required"></xsd:attribute>	
+		</xsd:extension>
+	</xsd:complexContent>	
+</xsd:complexType>
+
+<xsd:complexType name="RadioButtonGroupType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractControlType">
+			<xsd:sequence>
+				<xsd:element name="radioButton" type="RadioButtonType" minOccurs="1" maxOccurs="unbounded"></xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="paramName" use="required"></xsd:attribute>
+		</xsd:extension>	
+	</xsd:complexContent>	
+</xsd:complexType>
+
+<xsd:complexType name="RadioButtonType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="OptionalCaptionType">			
+  			<xsd:attribute name="value" use="required"></xsd:attribute> 
+		</xsd:extension>
+	</xsd:complexContent>		
+</xsd:complexType>
+
+<xsd:complexType name="SelectControlType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractControlType">
+			<xsd:sequence>
+				<xsd:element name="blankOption" minOccurs="0" maxOccurs="1">
+					<xsd:annotation><xsd:documentation>
+					This is used for the label of the first (empty) option in a single-select list control, and is also
+					the caption for	a multi-select list control button.
+					</xsd:documentation></xsd:annotation>
+					<xsd:complexType>
+						<xsd:group ref="abs:MultilingualLabelElement" minOccurs="1" maxOccurs="1"></xsd:group>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:choice>
+					<xsd:group ref="eq:EntityQueryElement"></xsd:group>
+					<xsd:element name="codeGroup">
+						<xsd:complexType>
+							<xsd:attribute name="name" type="xsd:string"></xsd:attribute>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:choice minOccurs="1" maxOccurs="unbounded">
+						<xsd:group ref="abs:CodeType"></xsd:group>
+						<xsd:element name="option" type="SelectOptionType"></xsd:element>
+					</xsd:choice>					
+				</xsd:choice>
+			</xsd:sequence>
+			<xsd:attribute name="paramName" use="required"></xsd:attribute>
+			<xsd:attribute name="allowMultiSelect" use="optional" type="xsd:boolean" default="false"></xsd:attribute>			
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="SelectOptionType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="RequiredCaptionType">			
+  			<xsd:attribute name="value" use="required" type="xsd:string"></xsd:attribute> 
+		</xsd:extension>
+	</xsd:complexContent>		
+</xsd:complexType>
+
+<xsd:complexType name="SpacerType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractControlType">
+			<xsd:attribute name="size" type="xsd:integer" use="optional"></xsd:attribute>
+		</xsd:extension>
+	</xsd:complexContent>	
+</xsd:complexType>
+
+<xsd:complexType name="ActionButtonType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="OptionalCaptionType">
+			<xsd:group ref="abs:ActionTypesGroup_BeforeData"></xsd:group>	
+  			<xsd:attribute name="iconFile" use="optional" type="abs:IconFileNameType"></xsd:attribute> 
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="ToolBarItemsType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+  	<xsd:choice minOccurs="1" maxOccurs="unbounded">
+  		<xsd:element name="label" type="RequiredCaptionType"></xsd:element>
+  		<xsd:element name="adaptMenu" type="AdaptMenuType"></xsd:element>
+  		<xsd:element name="checkbox" type="CheckboxType"></xsd:element>
+  		<xsd:element name="customMenu" type="CustomMenuType"></xsd:element>
+  		<xsd:element name="datePicker" type="DatePickerType"></xsd:element>
+  		<xsd:element name="radioButtonGroup" type="RadioButtonGroupType"></xsd:element>
+  		<xsd:element name="selectControl" type="SelectControlType"></xsd:element>
+  		<xsd:element name="spacer" type="SpacerType"></xsd:element>
+  		<xsd:element name="button" type="ActionButtonType"></xsd:element>
+  	</xsd:choice>
+</xsd:complexType>
+
+<xsd:complexType name="ToolBarType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+  	<xsd:sequence>
+  		<xsd:group ref="abs:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+  		<xsd:element name="row" minOccurs="1" maxOccurs="unbounded">  			
+  			<xsd:complexType>
+		  		<xsd:sequence>
+		  			<xsd:group ref="abs:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+					<xsd:element name="leftAlignedControls" minOccurs="0" maxOccurs="1" type="ToolBarItemsType"></xsd:element>
+					<xsd:element name="rightAlignedControls" minOccurs="0" maxOccurs="1" type="ToolBarItemsType"></xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+  		</xsd:element>
+  	</xsd:sequence>	
+</xsd:complexType>
+
+<xsd:group name="ToolBarElement">
+	<xsd:annotation><xsd:documentation>
+		Specifies the toolBar element, which specifies a group of controls used to set widget parameters 
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="toolBar" type="ToolBarType">
+			<xsd:annotation><xsd:documentation>
+				Specifies a group of controls used to set widget parameters 		
+			</xsd:documentation></xsd:annotation>			
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+</xsd:schema>

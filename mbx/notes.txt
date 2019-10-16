@@ -1,0 +1,39 @@
+Tools In Development
+
+(KEY:  - TODO,  * Doing,  x Broken/Blocked,  X Cancelled,  ? not sure,  / Done)
+                
+1 Development   >   2 Tests   >   3 README.md   >   4 Uploaded to GitHub/Website
+
+//// console : basic console for use in mobile devices without one
+/X   fn : tool for instrumenting functions with before/after and debug handlers - see observable
+/--- context : Groups LogHandler, Message, services under one app instance.
+//// jsid : Convert object with id's to use object references and back again
+//*- jsocs : JS Object/Contract Schema : simple way to specify and validate js object structure
+/x/- loader : tool for asynch loading js/html/json/css and applying to current html page. 
+???? load : tool for synchronous loading js/html/json/css and applying to current html page.
+//-- log : logger and log manager
+/*-- rs-client : RESTful service client
+/xxx settings : component for storing app wide settings conforming to jsocs spec
+x--- umd : universal module definition
+/*-- url-utils : tools for manipulating url strings
+//-- observable : make a function into an observable one, with obervable start/complete.
+/--- Message : for making observable message objects, that can validate sent data.
+/?-- hash-router : subscribe to hash change from/to events
+//// koObervableProps : make all properties on an object knockout observables
+/--- Lock : for controlling access to something, e.g. controlling UI interaction
+bank account data analysis, new standard format?
+
+========================================================================
+TODO / BUGS  
+ 
+(KEY:   ? Maybe do, + Do, x Don't do, * Doing, / Done)
+
++ loader jasmine error but only on martbox.co.uk ??
+/ CommonJS module export code added for HashRouter, Loader, Lock, LogHandler, Message, RSClient, url-utils
+/ martbox.co.uk access and upload koObservableProps
+X http://bootstrap-anchor.com/ - nice lib documentation page
+X IFTTT dropbox folder updates THEN update website/commit to GitHub
+X umd doesn't actually work properly with commonjs. redundant due to es6 modules??
++ jsocs needs json-schema generator to be of value (that has more adoption now anyway)
+
+

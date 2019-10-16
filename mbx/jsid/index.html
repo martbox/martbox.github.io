@@ -1,0 +1,30 @@
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+</head>
+
+<body class="container" data-markdown-url="readme.md">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+<script>
+(function(){  
+	marked.setOptions({
+	  renderer: new marked.Renderer(),
+	  gfm: true,
+	  tables: true,
+	  breaks: false,
+	  pedantic: false,
+	  sanitize: false,
+	  smartLists: true,
+	  smartypants: false
+	});
+	var url = document.body.dataset.markdownUrl;
+	var request = new XMLHttpRequest();
+	request.open("GET", url, false);
+	request.send();
+	document.body.innerHTML = marked(request.responseText);
+	})();
+</script>
+</body>
+</html>

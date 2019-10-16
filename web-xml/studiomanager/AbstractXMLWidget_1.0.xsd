@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+This schema specifies AbstractXMLWidget elements under the http://www.bond.co.uk/AbstractXMLWidget_1.0 namespace.
+All specific widget types will include these.
+-->
+<xsd:schema 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:grp="http://www.bond.co.uk/UserGroup_1.0"
+xmlns:prf="http://www.bond.co.uk/DomainProfile_1.0"
+elementFormDefault="qualified" version="1.0"
+xmlns="http://www.bond.co.uk/AbstractXMLWidget_1.0"
+targetNamespace="http://www.bond.co.uk/AbstractXMLWidget_1.0">
+
+<xsd:import 
+namespace="http://www.bond.co.uk/UserGroup_1.0" 
+schemaLocation="../domain/UserGroup_1.0.xsd"
+ />
+<xsd:import 
+namespace="http://www.bond.co.uk/DomainProfile_1.0" 
+schemaLocation="../domain/DomainProfile_1.0.xsd"
+ />
+
+
+<xsd:complexType name="ParametersType">
+	<xsd:sequence>
+		<xsd:element name="param" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>A parameter name/value pair required to build/display this widget</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="name" type="xsd:string" use="required"/>
+				<xsd:attribute name="value" type="xsd:string" use="required"/>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="MultilingualLabelType">
+	<xsd:sequence>
+		<xsd:element name="label" minOccurs="1" maxOccurs="unbounded" >
+			<xsd:annotation><xsd:documentation>Language specific text to display to the user</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:simpleContent>
+	      			<xsd:extension base="xsd:string">
+	      		  		<xsd:attribute name="language" type="xsd:language" use="required">
+	      		  			<xsd:annotation><xsd:documentation>Language code for this label (e.g. 'en' for english)</xsd:documentation></xsd:annotation>
+	      		  		</xsd:attribute>
+	      			</xsd:extension>
+	    		</xsd:simpleContent>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:complexType name="DomainProfileType">
+	<xsd:sequence>
+		<xsd:element name="profile" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>Contains a 'name' attribute specifying a domain profile name</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="name" type="prf:DomainProfileName" use="required">
+					<xsd:annotation><xsd:documentation>Must be a valid domain profile name</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>	
+</xsd:complexType>
+
+<xsd:complexType name="UserGroupType">
+	<xsd:sequence>
+		<xsd:element name="group" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>Contains a 'name' attribute specifying a user group name</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="name" type="grp:UserGroupName" use="required">
+					<xsd:annotation><xsd:documentation>Must be a valid user group name</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>	
+</xsd:complexType>
+
+
+<xsd:complexType name="WidgetPropertiesType">
+	<xsd:annotation>
+	   	<xsd:documentation>Specifies properties required by all widget types</xsd:documentation>
+	</xsd:annotation>
+	<xsd:all>
+			<xsd:element name="caption" type="MultilingualLabelType" minOccurs="1" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>The displayed name for the widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="helptip" type="MultilingualLabelType" minOccurs="1" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>Pop-up info for the widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="userGroups" type="UserGroupType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>List specific user groups permitted to use the widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="domainProfiles" type="DomainProfileType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>List specific domain profiles the widget applies to</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>Any initial parameters required to build/display this widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+	</xsd:all>
+	<xsd:attribute name="forStudioType" use="required">
+	    <xsd:annotation>
+	    	<xsd:documentation>
+	    	 SYSTEM: indicates the widget is only visible to a system studio.
+	    	 USER: indicates the widget is available to a users studio.
+	    	</xsd:documentation>
+	    </xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:enumeration value="SYSTEM" />
+			  <xsd:enumeration value="USER" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:attribute>	
+	<xsd:attribute name="configName" type="xsd:string" use="required">
+		<xsd:annotation><xsd:documentation>Identifies the widget in the system</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="colorable" type="xsd:boolean" use="required">
+		<xsd:annotation><xsd:documentation>Indicates whether the surround color of the widget can be changed</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="draggable" type="xsd:boolean" use="required">
+		<xsd:annotation><xsd:documentation>Indicates if this widget can be repositioned in a studio</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="selectable" type="xsd:boolean" use="required"></xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="AbstractXMLWidgetType">
+	<xsd:sequence>
+			<xsd:element name="widgetProperties" type="WidgetPropertiesType" minOccurs="1" maxOccurs="1"/>
+	</xsd:sequence>
+</xsd:complexType>
+
+</xsd:schema>

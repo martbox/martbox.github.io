@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+xmlns="myNS"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="myNS" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<xs:element name="root">
+<xs:complexType>
+  <xs:choice>
+    <xs:group ref="groupA"></xs:group>
+    <xs:group ref="groupB"></xs:group>
+  </xs:choice>
+</xs:complexType>
+</xs:element>
+
+<xs:group name="groupA">
+<xs:sequence>
+<xs:element name="number" type="xs:integer"></xs:element>
+</xs:sequence>
+</xs:group>
+
+<xs:group name="groupB">
+<xs:sequence>
+<xs:element name="boolean" type="xs:boolean"></xs:element>
+</xs:sequence>
+</xs:group>
+
+
+</xs:schema>

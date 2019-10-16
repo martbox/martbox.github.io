@@ -1,0 +1,971 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+This schema specifies AbstractXMLWidget elements under the http://www.bond.co.uk/AbstractXMLWidget_2.0 namespace.
+
+Derived from AbstractXMLWidget_1.0, this version adds..
+MultilingualLabelType expanded to support pre-installed custom labels
+TODO..
+
+-->
+<xsd:schema 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:grp="http://www.bond.co.uk/UserGroup_1.0"
+xmlns:prf="http://www.bond.co.uk/DomainProfile_1.0"
+xmlns:r="http://www.bond.co.uk/Role_1.0"
+xmlns:v="http://www.bond.co.uk/View_1.0"
+xmlns:m="http://www.bond.co.uk/Menu_1.0"
+xmlns:bo="http://www.bond.co.uk/BusinessObject_1.0"
+elementFormDefault="qualified" version="1.0"
+xmlns="http://www.bond.co.uk/AbstractXMLWidget_2.0"
+targetNamespace="http://www.bond.co.uk/AbstractXMLWidget_2.0">
+
+<xsd:import namespace="http://www.bond.co.uk/UserGroup_1.0" schemaLocation="../domain/UserGroup_1.0.xsd"  />
+<xsd:import namespace="http://www.bond.co.uk/DomainProfile_1.0" schemaLocation="../domain/DomainProfile_1.0.xsd" />
+<xsd:import namespace="http://www.bond.co.uk/View_1.0" schemaLocation="../domain/View_1.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/Menu_1.0" schemaLocation="../domain/Menu_1.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/Role_1.0" schemaLocation="../domain/Role_1.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/BusinessObject_1.0" schemaLocation="../domain/BusinessObject_1.0.xsd"></xsd:import>
+
+<xsd:simpleType name="WidgetNameType">
+	<xsd:annotation><xsd:documentation>
+	String matching the pattern [a-zA-Z]{1}[a-zA-Z0-9_-]*
+	</xsd:documentation></xsd:annotation>
+	<xsd:restriction base="xsd:string">
+		<xsd:pattern value="[a-zA-Z]{1}[a-zA-Z0-9_-]*"></xsd:pattern>
+	</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="IconFileNameType">
+	<xsd:annotation><xsd:documentation>
+	String matching the pattern (auto)|(Auto)|(AUTO)|([^\.]*\.((gif)|(jpg)|(png)|(svg)|(GIF)|(JPG)|(PNG)|(SVG)))
+	</xsd:documentation></xsd:annotation>
+	<xsd:restriction base="xsd:string">
+		<xsd:pattern value="(auto)|(Auto)|(AUTO)|([^\.]*\.((gif)|(jpg)|(png)|(svg)|(GIF)|(JPG)|(PNG)|(SVG)))"></xsd:pattern>		
+	</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="HTTPURLType"> <!-- uri restricted to http and https urls -->
+	<xsd:annotation><xsd:documentation>
+		Simple type using the restriction patttern:  http(s)?://([^/:]*)(:[\d]{1,4})?(/[^/]*)*
+	</xsd:documentation></xsd:annotation>
+	<xsd:restriction base="xsd:anyURI" >
+ 		 <xsd:pattern value="http(s)?://([^/:]*)(:[\d]{1,4})?(/[^/]*)*"></xsd:pattern> 		
+ 		  
+	</xsd:restriction>
+</xsd:simpleType>
+
+
+<xsd:complexType name="ParametersType" >
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, OTHER SCHEMA SHOULD NOT REFER TO THIS
+	</xsd:documentation></xsd:annotation>
+
+	<xsd:sequence>
+		<xsd:element name="param" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>A parameter name/value pair required to build/display this widget</xsd:documentation></xsd:annotation>
+			<xsd:complexType >
+				<xsd:attribute name="name" type="xsd:string" use="required"/>
+				<xsd:attribute name="value" type="xsd:string" use="required"/>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:group name="MultilingualLabelGroup" >
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, OTHER SCHEMA SHOULD NOT REFER TO THIS TYPE
+	</xsd:documentation></xsd:annotation>
+	
+	<xsd:sequence>
+		<xsd:element name="label" minOccurs="1" maxOccurs="unbounded" >
+			<xsd:annotation><xsd:documentation>Language specific text to display to the user</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:simpleContent>
+	      			<xsd:extension base="xsd:string">
+	      		  		<xsd:attribute name="language" type="xsd:language" use="required">
+	      		  			<xsd:annotation><xsd:documentation>Language code for this label (e.g. 'en' for english)</xsd:documentation></xsd:annotation>
+	      		  		</xsd:attribute>
+	      			</xsd:extension>
+	    		</xsd:simpleContent>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:complexType name="MultilingualLabelType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, OTHER SCHEMA SHOULD NOT REFER TO THIS TYPE
+	</xsd:documentation></xsd:annotation>
+	<xsd:group ref="MultilingualLabelGroup"></xsd:group>
+</xsd:complexType>
+
+<xsd:complexType name="RuntimeMultilingualLabelType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schema should instead include the group: MultilingualLabelElement)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="MultilingualLabelGroup"></xsd:group>
+		<xsd:element name="customLabel">
+			<xsd:annotation><xsd:documentation>Indicates an installed custom label should be used</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="configName" type="xsd:string" use="required">
+				<xsd:annotation><xsd:documentation>Config name of installed custom label</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:complexType>
+
+<xsd:complexType name="DomainProfileType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, OTHER SCHEMA SHOULD NOT REFER TO THIS TYPE
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="profile" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>Contains a 'name' attribute specifying a domain profile name</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="name" type="prf:DomainProfileName" use="required">
+					<xsd:annotation><xsd:documentation>Must be a valid domain profile name</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>	
+</xsd:complexType>
+
+<xsd:complexType name="UserGroupType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, OTHER SCHEMA SHOULD NOT REFER TO THIS TYPE
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="group" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>Contains a 'name' attribute specifying a user group name</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="name" type="grp:UserGroupName" use="required">
+					<xsd:annotation><xsd:documentation>Must be a valid user group name</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>	
+</xsd:complexType>
+
+
+<xsd:complexType name="WidgetPropertiesType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, OTHER SCHEMA SHOULD NOT REFER TO THIS TYPE
+	</xsd:documentation></xsd:annotation>
+	<xsd:all>
+			<xsd:element name="caption" type="MultilingualLabelType" minOccurs="1" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>The displayed name for the widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="helptip" type="MultilingualLabelType" minOccurs="1" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>Pop-up info for the widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="userGroups" type="UserGroupType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>List specific user groups permitted to use the widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="domainProfiles" type="DomainProfileType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>List specific domain profiles the widget applies to</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="parameters" type="ParametersType" minOccurs="0" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>Any initial parameters required to build/display this widget</xsd:documentation></xsd:annotation>
+			</xsd:element>
+	</xsd:all>
+	<xsd:attribute name="forStudioType" use="required">
+	    <xsd:annotation>
+	    	<xsd:documentation>
+	    	 SYSTEM: indicates the widget is only visible to a system studio.
+	    	 USER: indicates the widget is available to a users studio.
+	    	</xsd:documentation>
+	    </xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+			  <xsd:enumeration value="SYSTEM" />
+			  <xsd:enumeration value="USER" />
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:attribute>	
+	<xsd:attribute name="configName" type="WidgetNameType" use="required">
+		<xsd:annotation><xsd:documentation>Identifies the widget in the system</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="colorable" type="xsd:boolean" use="required">
+		<xsd:annotation><xsd:documentation>Indicates whether the surround color of the widget can be changed</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="draggable" type="xsd:boolean" use="required">
+		<xsd:annotation><xsd:documentation>Indicates if this widget can be repositioned in a studio</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="selectable" type="xsd:boolean" use="required"></xsd:attribute>
+</xsd:complexType>
+
+
+<!-- included by other schemas -->
+<xsd:group name="WidgetPropertiesElement">
+	<xsd:annotation><xsd:documentation>
+		Sequence containing one widgetProperties element describing common widget details needed at installation/registration time.
+		(ALL widget types should include at least this element in order to be correctly installed)
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="widgetProperties" type="WidgetPropertiesType" minOccurs="1" maxOccurs="1">
+			<xsd:annotation>
+		   		<xsd:documentation>Specifies common widget properties</xsd:documentation>
+			</xsd:annotation>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<!-- included by other schemas -->
+<xsd:group name="MultilingualLabelElement">
+	<xsd:annotation><xsd:documentation>
+		Sequence containing one multilingualLabel element
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="multilingualLabel" type="RuntimeMultilingualLabelType" minOccurs="1" maxOccurs="1">
+			<xsd:annotation>
+		   		<xsd:documentation>Specifies a label in different languages</xsd:documentation>
+			</xsd:annotation>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:simpleType name="OperatorType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:restriction base="xsd:string">
+		<xsd:enumeration value="EQUAL"></xsd:enumeration>
+		<xsd:enumeration value="NOT_EQUAL"></xsd:enumeration>
+		<xsd:enumeration value="LESS_THAN"></xsd:enumeration>
+		<xsd:enumeration value="GREATER_THAN"></xsd:enumeration>
+		<xsd:enumeration value="EQUAL_OR_GREATER_THAN"></xsd:enumeration>
+		<xsd:enumeration value="EQUAL_OR_LESS_THAN"></xsd:enumeration>
+		<xsd:enumeration value="IN"></xsd:enumeration>
+		<xsd:enumeration value="BETWEEN"></xsd:enumeration>
+		<xsd:enumeration value="NOT_IN"></xsd:enumeration>
+		<xsd:enumeration value="NOT_BETWEEN"></xsd:enumeration>
+	</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:group name="CommonDataTypes"> <!-- applicable to entity reference type and general numeric type -->
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schemas should use a broader data type group)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:element name="widgetParamData">
+				<xsd:annotation><xsd:documentation>Refers to data stored in the named widget parameter</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+					<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+					<xsd:attribute name="asType" use="optional">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="NUMBER"></xsd:enumeration>
+								<xsd:enumeration value="TEXT"></xsd:enumeration>
+								<xsd:enumeration value="DATE"></xsd:enumeration>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="currentEntityID">
+				<xsd:annotation><xsd:documentation>Refers to the current selected entities reference ID (0 if none selected)</xsd:documentation></xsd:annotation>				
+		</xsd:element>
+		<xsd:group ref="CodeType"></xsd:group>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:group name="CodeType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schemas should use a broader data type group)
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="code">
+				<xsd:annotation><xsd:documentation>Refers to the ID(number) or DESCRIPTION(text) of an Adapt code</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+					<xsd:attribute name="name" type="xsd:string" use="required">
+						<xsd:annotation><xsd:documentation>
+						Refers to the ID(number) or DESCRIPTION(text) of an Adapt code
+						</xsd:documentation></xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="get" use="optional">
+						<xsd:simpleType>
+							<xsd:restriction base="xsd:string">
+								<xsd:enumeration value="ID"></xsd:enumeration>
+								<xsd:enumeration value="DESCRIPTION"></xsd:enumeration>
+							</xsd:restriction>
+						</xsd:simpleType>
+					</xsd:attribute>
+				</xsd:complexType>		
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="DataFieldType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schemas should use a broader data type group)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:element name="dataField">
+			<xsd:annotation><xsd:documentation>
+				Indicates data obtained from a field on the current data object or row
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+
+<xsd:group name="EntityReferenceDataTypes">
+	<xsd:annotation><xsd:documentation>
+		Choice of data elements that can refer to an entity reference ID  
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="DataFieldType"></xsd:group>
+		<xsd:group ref="CommonDataTypes"></xsd:group>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:group name="ServerSideNumericDataTypes_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		Choice of all numberic data elements except for 'dataField'.
+		This group should only be used before widget data has been obtained.
+		(For example widget parameter pre-processing and in entity query where clauses) 
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+			<xsd:group ref="CommonDataTypes"></xsd:group>
+			<xsd:element name="currentUserID" >
+				<xsd:annotation><xsd:documentation>Refers to the current users ID (if applicable)</xsd:documentation></xsd:annotation>				
+			</xsd:element>
+			<xsd:element name="literalNumber">
+				<xsd:annotation><xsd:documentation>A specific fixed numeric value</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+					<xsd:attribute name="value" type="xsd:decimal" use="required"></xsd:attribute>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="literalDate">
+				<xsd:annotation><xsd:documentation>Specifies a fixed UTC date value. Defaults to current date. (format: yyyy-MM-dd)</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+					<xsd:attribute name="value" type="xsd:date" use="optional"></xsd:attribute>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+</xsd:group>
+
+<!-- included by other schemas -->
+<xsd:group name="ServerSideAtomicDataTypes_BeforeData"> <!-- groups all options for where data used in server side conditions can come from and adds dataList -->
+	<xsd:annotation><xsd:documentation>
+		Choice of all data elements except for 'dataField' (applicable after widget data has been otained).
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="ServerSideNumericDataTypes_BeforeData"></xsd:group>
+		<xsd:element name="literalText">
+			<xsd:annotation><xsd:documentation>A specific fixed text value</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="value" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:group ref="MultilingualLabelElement"></xsd:group>
+	</xsd:choice>
+</xsd:group>
+
+<!-- included by other schemas -->
+<xsd:group name="ServerSideAtomicDataTypes_WithData"> 
+	<xsd:annotation><xsd:documentation>
+		Choice of all data elements including 'dataField'.
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="ServerSideNumericDataTypes_BeforeData"></xsd:group>
+		<xsd:group ref="DataFieldType"></xsd:group>
+		<xsd:element name="literalText">
+			<xsd:annotation><xsd:documentation>A specific fixed text value</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="value" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:group ref="MultilingualLabelElement"></xsd:group>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:group name="ServerSideDataGroup_BeforeData"> <!-- groups all options for where data used in server side conditions can come from and adds dataList -->
+	<xsd:annotation><xsd:documentation>
+		Choice of all data elements, and a 'dataList' element for listing a number of these.
+		doesn't include the 'dataField' element (applicable after widget data has been obtained)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="ServerSideAtomicDataTypes_BeforeData"></xsd:group>
+		<xsd:element name="dataList" >
+			<xsd:annotation><xsd:documentation>
+			Indicates data is a list of other data items (e.g. for use with the IN operator)
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:group ref="ServerSideAtomicDataTypes_BeforeData" minOccurs="1" maxOccurs="unbounded"></xsd:group>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:group name="ServerSideDataGroup_WithData"> <!-- groups all options for where data used in server side conditions can come from and adds dataList -->
+	<xsd:annotation><xsd:documentation>
+		Choice of all data elements including 'dataField' and a 'dataList' element for listing a number of these.
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="ServerSideAtomicDataTypes_WithData"></xsd:group>
+		<xsd:element name="dataList" >
+			<xsd:annotation><xsd:documentation>
+			Indicates data is a list of other data items (e.g. for use with the IN operator)
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:group ref="ServerSideAtomicDataTypes_WithData" minOccurs="1" maxOccurs="unbounded"></xsd:group>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:complexType name="ServerSideConditionType_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schemas use one of the ServerSideConditionElement groups)
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="ServerSideDataGroup_BeforeData" minOccurs="2" maxOccurs="2"></xsd:group>
+		<xsd:choice minOccurs="0" maxOccurs="1">
+			<xsd:element name="and" type="ServerSideConditionType_BeforeData" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation><xsd:documentation>
+					Specifies an additional condition that must be met
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="or" type="ServerSideConditionType_BeforeData" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation><xsd:documentation>
+					Specifies an alternative condition
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:sequence>
+	<xsd:attribute name="operator" type="OperatorType" use="required"></xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="ServerSideConditionType_WithData">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schemas use one of the ServerSideConditionElement groups)
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="ServerSideDataGroup_WithData" minOccurs="2" maxOccurs="2"></xsd:group>
+		<xsd:choice minOccurs="0" maxOccurs="1">
+			<xsd:element name="and" type="ServerSideConditionType_WithData" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation><xsd:documentation>
+					Specifies an additional condition that must be met
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+			<xsd:element name="or" type="ServerSideConditionType_WithData" minOccurs="1" maxOccurs="unbounded">
+				<xsd:annotation><xsd:documentation>
+					Specifies an alternative condition
+				</xsd:documentation></xsd:annotation>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:sequence>
+	<xsd:attribute name="operator" type="OperatorType" use="required"></xsd:attribute>
+</xsd:complexType>
+
+
+
+<!-- included by other schemas -->
+<xsd:group name="ServerSideConditionElement_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		Sequence including one 'condition' element, that can refer to all data types except for
+		'dataField' (only applicable after widget data has been obtained)
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="condition" minOccurs="1" maxOccurs="1">
+			<xsd:annotation>
+		   		<xsd:documentation>Specifies a condition used to determine whether or not the parent element should be processed</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ServerSideDataGroup_BeforeData" minOccurs="2" maxOccurs="2"></xsd:group>
+					<xsd:choice minOccurs="0" maxOccurs="1">
+						<xsd:element name="and" type="ServerSideConditionType_BeforeData" minOccurs="1" maxOccurs="unbounded">
+							<xsd:annotation><xsd:documentation>
+								Specifies an additional condition that must be met
+							</xsd:documentation></xsd:annotation>
+						</xsd:element>
+						<xsd:element name="or" type="ServerSideConditionType_BeforeData" minOccurs="1" maxOccurs="unbounded">
+							<xsd:annotation><xsd:documentation>
+								Specifies an alternative condition
+							</xsd:documentation></xsd:annotation>
+						</xsd:element>
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:attribute name="operator" type="OperatorType" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<!-- included by other schemas -->
+<xsd:group name="ServerSideConditionElement_WithData">
+	<xsd:annotation><xsd:documentation>
+		Sequence including one 'condition' element, that can refer to all data types, including 
+		'dataField'.
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="condition" minOccurs="1" maxOccurs="1">
+			<xsd:annotation>
+		   		<xsd:documentation>
+		   		Specifies a condition used to determine whether or not the parent element should be processed.
+		   		This condition type is used on elements involved in processing or displaying a data object/row, and 
+		   		as such may also include reference to named fields in that data. (e.g. a column name in a database result set)
+		   		</xsd:documentation>
+			</xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ServerSideDataGroup_WithData" minOccurs="2" maxOccurs="2"></xsd:group>
+					<xsd:choice minOccurs="0" maxOccurs="1">
+						<xsd:element name="and" type="ServerSideConditionType_WithData" minOccurs="1" maxOccurs="unbounded">
+							<xsd:annotation><xsd:documentation>
+								Specifies an additional condition that must be met
+							</xsd:documentation></xsd:annotation>
+						</xsd:element>
+						<xsd:element name="or" type="ServerSideConditionType_WithData" minOccurs="1" maxOccurs="unbounded">
+							<xsd:annotation><xsd:documentation>
+								Specifies an alternative condition
+							</xsd:documentation></xsd:annotation>
+						</xsd:element>
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:attribute name="operator" type="OperatorType" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+
+
+<!-- PARAMETER PROCESSING SECTION -->
+
+<xsd:complexType name="AbstractParameterProcessingType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+	</xsd:sequence>
+	<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+	<xsd:attribute name="onWidgetNamed" type="xsd:string" use="optional"></xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="SetParameterType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractParameterProcessingType">
+			<xsd:sequence>
+				<xsd:group ref="ServerSideAtomicDataTypes_BeforeData" minOccurs="1" maxOccurs="1"></xsd:group>
+			</xsd:sequence>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="AlterTextParameterType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractParameterProcessingType">
+			<xsd:sequence>
+				<xsd:group ref="ServerSideAtomicDataTypes_BeforeData" minOccurs="1" maxOccurs="2"></xsd:group>
+			</xsd:sequence>
+			<xsd:attribute name="operation" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="PREPEND"></xsd:enumeration>
+						<xsd:enumeration value="APPEND"></xsd:enumeration>
+						<xsd:enumeration value="REPLACE"></xsd:enumeration>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="AlterNumericParameterType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="AbstractParameterProcessingType">
+			<xsd:sequence>
+				<xsd:group ref="ServerSideNumericDataTypes_BeforeData" minOccurs="1" maxOccurs="1"></xsd:group>
+			</xsd:sequence>
+			<xsd:attribute name="operation" use="required">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="INCREMENT"></xsd:enumeration>
+						<xsd:enumeration value="DECREMENT"></xsd:enumeration>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="timeUnit" use="optional"> <!-- DAYS as default in parser -->
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="MINUTES"></xsd:enumeration>
+						<xsd:enumeration value="HOURS"></xsd:enumeration>
+						<xsd:enumeration value="DAYS"></xsd:enumeration>
+						<xsd:enumeration value="WEEKS"></xsd:enumeration>
+						<xsd:enumeration value="MONTHS"></xsd:enumeration>
+						<xsd:enumeration value="YEARS"></xsd:enumeration>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<!-- included by other schemas -->
+<xsd:group name="ParameterProcessingElement">
+	<xsd:annotation><xsd:documentation>
+		Sequence with one 'parameterProcessing' element for setting/altering widget parameters
+		before processing the rest of the widget.
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="parameterProcessing">
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>				
+					<xsd:choice minOccurs="1" maxOccurs="unbounded">
+						<xsd:element name="setParameter" type="SetParameterType"/>
+						<xsd:element name="alterTextParameter" type="AlterTextParameterType"/>
+						<xsd:element name="alterNumericParameter" type="AlterNumericParameterType" />
+					</xsd:choice>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>	
+</xsd:group>
+
+
+<!-- ACTION TYPES -->
+
+<xsd:group name="ParameterListElement_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		Specifies a generic 'parameterList' element which can contain a number of named parameter
+		elements, each containing an element describing where the data comes from.
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="parameterList">
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element name="parameter" minOccurs="1" maxOccurs="unbounded">
+						<xsd:complexType>
+							<xsd:group ref="ServerSideAtomicDataTypes_BeforeData" minOccurs="1" maxOccurs="1"></xsd:group>
+							<xsd:attribute name="name" use="required"></xsd:attribute>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="ParameterListElement_WithData">
+	<xsd:annotation><xsd:documentation>
+		Specifies a generic 'parameters' element which can contain a number of named parameter
+		elements, each containing an element describing where the data comes from.
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="parameterList">
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element name="parameter" minOccurs="1" maxOccurs="unbounded">
+						<xsd:complexType>
+							<xsd:group ref="ServerSideAtomicDataTypes_WithData" minOccurs="1" maxOccurs="1"></xsd:group>
+							<xsd:attribute name="name" use="required"></xsd:attribute>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="JavascriptFunctionCall_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		Describes how a javascript function call should be constructed. (Cannot use widget data fields
+		as call parameters, as when evaluated at run time the widget data has not been obtained yet)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:element name="javascriptFunctionCall">			
+			<xsd:complexType>
+				<xsd:group ref="ParameterListElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>			
+				<xsd:attribute name="functionName" use="required"> <!-- function assumed to be in a widgetName.js file under widgetName object -->
+					<xsd:annotation><xsd:documentation>
+						The name of the JavaScript function to call (this must be available on a JavaScript object matching the name of the widget) 
+					</xsd:documentation></xsd:annotation>
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:pattern value="[a-zA-Z_$]{1}[a-zA-Z0-9_$]*"></xsd:pattern>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>				
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:group name="JavascriptFunctionCall_WithData">
+	<xsd:annotation><xsd:documentation>
+		Describes how a javascript function call should be constructed. ()Can use widget data fields
+		as call parameters)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:element name="javascriptFunctionCall">
+			<xsd:complexType>
+				<xsd:group ref="ParameterListElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>			
+				<xsd:attribute name="functionName" use="required"> <!-- function assumed to be in a widgetName.js file under widgetName object -->
+					<xsd:annotation><xsd:documentation>
+						The name of the JavaScript function to call (this must be available on a JavaScript object matching the name of the widget) 
+					</xsd:documentation></xsd:annotation>
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:pattern value="[a-zA-Z_$]{1}[a-zA-Z0-9_$]*"></xsd:pattern>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>				
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+
+<xsd:group name="ActionMenu_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		Specifies actionMenu element that doesn't allow dataField elements in its items 
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="actionMenu">
+			<xsd:annotation><xsd:documentation>
+			Specifies list of actionMenuItem elements applicable before query data is obtained
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ActionMenuItem_BeforeData" minOccurs="1" maxOccurs="unbounded"></xsd:group>
+				</xsd:sequence>
+				<xsd:attribute name="menuID" use="required" type="xsd:string"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="ActionMenuItem_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="actionMenuItem">
+			<xsd:annotation><xsd:documentation>
+				Specifies a caption and action element representing a menu item
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element name="caption">
+						<xsd:complexType>
+							<xsd:group ref="ServerSideAtomicDataTypes_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="action">
+						<xsd:complexType>
+							<xsd:group ref="ActionTypesGroup_BeforeData"></xsd:group>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="iconFile" use="optional" type="IconFileNameType">
+					<xsd:annotation><xsd:documentation>
+					Optionally set an icon file for this action menu item. Use 'auto' to see
+					the icon already assigned to the action or a default icon if not applicable.
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+
+<xsd:group name="ActionMenu_WithData">
+	<xsd:annotation><xsd:documentation>
+		Specified actionMenu element that supports dataField elements in its items 
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="actionMenu">
+			<xsd:annotation><xsd:documentation>
+			Specifies a list of actionMenuItem elements applicable after query data is obtained
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ActionMenuItem_WithData" minOccurs="1" maxOccurs="unbounded"></xsd:group>
+				</xsd:sequence>
+				<xsd:attribute name="menuID" use="required" type="xsd:string"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="ActionMenuItem_WithData">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="actionMenuItem">
+			<xsd:annotation><xsd:documentation>
+				Specifies a caption and action element representing a menu item
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:element name="caption">
+						<xsd:complexType>
+							<xsd:group ref="ServerSideAtomicDataTypes_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="action">
+						<xsd:complexType>
+							<xsd:group ref="ActionTypesGroup_WithData"></xsd:group>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="iconFile" use="optional" type="IconFileNameType">
+					<xsd:annotation><xsd:documentation>
+						Optionally set an icon file for this action menu item. Use 'auto' to see
+						the icon already assigned to the action or a default icon if not applicable.
+						</xsd:documentation></xsd:annotation>
+					</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+
+<xsd:group name="CommonActionTypesGroup">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schemas should refer to a broader ActionTypesGroup)
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>		
+		<xsd:element name="workflowView">
+			<xsd:complexType>
+				<xsd:attribute name="configName" type="v:ViewName" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="runQuery">
+			<xsd:complexType> <!-- config name not validated via an Adapt schema yet -->
+				<xsd:attribute name="configName" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="openAdaptMenu">
+			<xsd:complexType> <!-- config name not validated via an Adapt schema yet -->
+				<xsd:attribute name="configName" type="m:MenuName" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="openPopupWidget">
+			<xsd:complexType>
+				<xsd:attribute name="widgetName" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:group name="ActionTypesGroup_BeforeData">
+	<xsd:annotation><xsd:documentation>
+		A choice of all action elements applicable before data for a widget is obtained.
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="CommonActionTypesGroup"></xsd:group>
+		<xsd:element name="hyperlink">
+			<xsd:complexType>
+				<xsd:group ref="ParameterListElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:attribute name="url" type="HTTPURLType" use="required"></xsd:attribute>
+			</xsd:complexType>		
+		</xsd:element>
+		<xsd:element name="setParameters">
+			<xsd:complexType>
+				<xsd:group ref="ParameterListElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:attribute name="refreshWidget" type="xsd:boolean">
+					<xsd:annotation><xsd:documentation>
+					Indicates the widget will refresh after changing any parameters
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:group ref="ActionMenu_BeforeData"></xsd:group>
+		<xsd:group ref="JavascriptFunctionCall_BeforeData"></xsd:group>
+		<xsd:element name="businessObject">
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ParameterListElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+					<xsd:element name="onComplete" minOccurs="0" maxOccurs="1">
+						<xsd:annotation><xsd:documentation>Specifies another action to carry out when the BO completes</xsd:documentation></xsd:annotation>
+						<xsd:complexType>
+							<xsd:group ref="ActionTypesGroup_BeforeData" minOccurs="1" maxOccurs="1"></xsd:group>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="configName" type="bo:BusinessObjectName" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+
+<xsd:group name="ActionTypesGroup_WithData">
+	<xsd:annotation><xsd:documentation>
+		A choice of all action elements applicable after data for a widget is obtained.
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<xsd:group ref="CommonActionTypesGroup"></xsd:group>
+		<xsd:element name="openEntity">
+			<xsd:complexType>
+				<xsd:attribute name="asRole" type="r:RoleName" use="optional"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="openDefaultDocument">
+			<xsd:annotation><xsd:documentation>
+			Opens the default document in the named category for the entity referred to by the current reference.
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="inDocumentCategory" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="hyperlink">
+			<xsd:complexType>
+				<xsd:group ref="ParameterListElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:attribute name="url" type="HTTPURLType" use="required"></xsd:attribute>
+			</xsd:complexType>		
+		</xsd:element>
+		<xsd:element name="setParameters">
+			<xsd:complexType>
+				<xsd:group ref="ParameterListElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:attribute name="refreshWidget" type="xsd:boolean" default="true" use="optional">
+					<xsd:annotation><xsd:documentation>
+					Indicates the widget will refresh after changing any parameters
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:group ref="ActionMenu_WithData"></xsd:group>
+		<xsd:group ref="JavascriptFunctionCall_WithData"></xsd:group>
+		<xsd:element name="businessObject">
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="ParameterListElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+					<xsd:element name="onComplete" minOccurs="0" maxOccurs="1">
+						<xsd:annotation><xsd:documentation>Specifies another action to carry out when the BO completes</xsd:documentation></xsd:annotation>
+						<xsd:complexType>
+							<xsd:group ref="ActionTypesGroup_WithData" minOccurs="1" maxOccurs="1"></xsd:group>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+				<xsd:attribute name="configName" type="bo:BusinessObjectName" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>		
+	</xsd:choice>
+</xsd:group>
+
+
+
+</xsd:schema>

@@ -1,0 +1,1 @@
+if(top.testJS1_evaluated) top.testJS2_evaluated = true;

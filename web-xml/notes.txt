@@ -1,0 +1,62 @@
+
+XEdit
+Web based schema aware xml editor you can embed in your web application
+This is built on top of xonomy.
+see https://github.com/michmech/xonomy
+
+What does the web based schema aware editor you open up need access to?
+in domain url to ajax load xsd from
+in domain url to ajax post updated xml doc to
+
+/ mbx-xonomy.js - 3rd party editor, slightly updated
+
+/ xs-docspec.js - tool for constructing xonomy docspec with xsd style rules
+
+/ xsd-parser.js - parses an xsd file and builds a docspec from it using xs-docspec.js
+
+mbx/rs-client.js - simple tool providing GET/PUT/DELETE/POST methods for an xml document from/to given url.
+   One URL used here, same for all operations, just identifying the resource involved, using application/xml content-type.
+   
+xml-editor.js - pass it xml and xsd urls and it should open editor in a new/named window/iframe.
+   save button handler
+   save as local file button handler
+   save schema as local file button handler
+
+loaded xml should be search for xml schema reference attribute.
+This schema should be used to launch xml editor.
+   
+===============================================================================================
+
+TODO / BUGS   (KEY: + todo,  * doing,  x notdo,  ? maybe,  / done)
+
+add support for element substitutionGroup (element names used as aliases for another element)
+add support sequence of any
+element specs appear for 'schema' AND 'xs:schema' among others ??? why
+add support for import..
+   This is in progress, docspec is parsed from schemaLocation ok, but the xml.xsd only has
+   attributes and attributeGroup in it. These are added in the ctx as found objects only, not added to any element specs
+   in the docspec, and even then their names aren't ns prefixed appropriately so referencing elements in the main xmlschema
+   docspec can't find them. (I think)
+<xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd">
+* xml schema instance editor using schema from https://www.w3.org/2009/XMLSchema/XMLSchema.xsd 
+/ xsd-parser.js build an xs-docspec instance from xsd xml read via xsm2js in Xonomy.
+X xsd-parser.js should use promises to resolve references once all are available - doesn't really fit that model
++ Make menu items narrower & add better :focus styling
+/ CTRL+C to copy element
+/ CTRL+V to paste element (paste after)
+/ ESC to close popup
+/ CTRL+UP/DOWN to move element up/down within parent element
+/ restore focus to launching element after popup/bubble closed
+/ CTRL+SPACE to expand/close element
+/ UP/DOWN to choose open menu options.
+/ ENTER to edit / show popup
+/ UP/LEFT and DOWN/RIGHT/TAB between tabIndex=1 elements.
+/ add menu options to copy / paste elements
+/ dragging/moving elements within parent element
+/ change default content for elements to include default/fixed attributes as well
+/ add getDefaultValue into simple type definitions, and use in att and elem specs.
+/ fix element group validation. correct child elements not showing as valid. see improved logging.
+/ add 'Edit content' menu option for elements with a simple type (which may have NO content to click on)
+/ Click attribute/value doesn't open menu/picker
+/ number validation failing on numEl
+/ onchange validation failing

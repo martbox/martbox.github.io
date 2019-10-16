@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Schema defining LanguageName simple type giving 
+possible language names for a particular Adapt domain.
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.bond.co.uk/Language_1.0" elementFormDefault="qualified" version="1.0">
+	<xsd:simpleType name="LanguageName">
+<xsd:annotation>
+   	<xsd:documentation>
+   	 Simple type restricted to possible language names for a particular Adapt domain.
+   	</xsd:documentation>
+   </xsd:annotation>
+		<xsd:restriction base="xsd:string">
+
+<xsd:enumeration value="English"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<EntityListWidget 
+xmlns="http://www.bond.co.uk/EntityListWidget_1.0" 
+xmlns:abs="http://www.bond.co.uk/AbstractXMLWidget_2.0"
+xmlns:p="http://www.bond.co.uk/PropertyTable_1.0" 
+xmlns:tb="http://www.bond.co.uk/WidgetToolbar_1.0" 
+xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.bond.co.uk/EntityListWidget_1.0 ../studiomanager/EntityListWidget_1.0.xsd 
+http://www.bond.co.uk/AbstractXMLWidget_2.0 ../studiomanager/AbstractXMLWidget_2.0.xsd 
+http://www.bond.co.uk/PropertyTable_1.0 ../domain/PropertyTable_1.0.xsd 
+http://www.bond.co.uk/WidgetToolbar_1.0 ../studiomanager/WidgetToolbar_1.0.xsd
+http://www.bond.co.uk/WidgetEntityQuery_1.0 ../studiomanager/WidgetEntityQuery_1.0.xsd"
+>
+<!-- Describe basic widget identity and accessibility properties -->
+<abs:widgetProperties draggable="true" selectable="true" colorable="true" 
+forStudioType="USER" configName="simpleWidget">
+<abs:caption><abs:label language="en">Simple Widget</abs:label></abs:caption>
+<abs:domainProfiles><abs:profile name="CoreProfile"/></abs:domainProfiles>
+<abs:helptip><abs:label language="en">This is a basic widget for documentation examples
+</abs:label></abs:helptip>
+<abs:parameters><abs:param name="PARAM_1" value="true"/></abs:parameters>
+<abs:userGroups><abs:group name="IT"/></abs:userGroups>
+</abs:widgetProperties>
+
+<!-- describe entity list row selection mode (NONE/SINGLE/MULTI) -->
+<selectionType type="NONE"/>
+
+<!-- Describe how entity data is obtained -->
+<eq:entityQuery>
+<eq:primaryProperty name="PERSON_GEN" referenceAttribute="PERSON_GEN.REFERENCE">
+		<!-- identify attributes we need from this property -->
+		<eq:propertyAttribute ID="first_name" name="PERSON_GEN.FIRST_NAME"/>
+		<eq:propertyAttribute ID="last_name" name="PERSON_GEN.LAST_NAME"/>		
+	</eq:primaryProperty>
+	<eq:dataField name="name"><eq:propertyAttributeRef REF="first_name"/></eq:dataField>
+	<eq:dataField name="surname"><eq:propertyAttributeRef REF="last_name"/></eq:dataField>
+	<eq:orderBy direction="ASCENDING"><eq:propertyAttributeRef REF="last_name"/>
+</eq:orderBy>	
+	<eq:pageNavigation defaultMaxPerPage="20"/>
+</eq:entityQuery>
+
+<!-- Describe what columns to display and what data to show in them -->
+<displayColumn width="SMALL">	
+	<columnHeader><abs:multilingualLabel>
+		<abs:label language="en">Name</abs:label>
+	</abs:multilingualLabel></columnHeader>
+	<cellText><abs:dataField name="name"/></cellText>
+	<cellAction type="LEFT_CLICK">
+		<abs:openEntity/>
+	</cellAction>
+</displayColumn>
+<displayColumn width="SMALL">	
+	<columnHeader><abs:multilingualLabel>
+		<abs:label language="en">Surname</abs:label>
+	</abs:multilingualLabel></columnHeader>
+	<cellText><abs:dataField name="surname"/></cellText>
+</displayColumn>
+<displayColumn width="SMALL">	
+	<columnHeader><abs:multilingualLabel>
+		<abs:label language="en">Custom Menu 1</abs:label>
+	</abs:multilingualLabel></columnHeader>
+	<cellIcon iconFile="testIcon.png"></cellIcon>
+	<cellAction type="LEFT_CLICK">
+	<abs:actionMenu menuID="myMenu">
+		<abs:actionMenuItem>
+			<abs:caption>
+				<abs:literalText value="Refresh Widget"/>
+			</abs:caption>
+			<abs:action>
+				<abs:setParameters>
+					<abs:parameterList>
+						<abs:parameter name="myParam">
+							<abs:literalText value="a_value"/>
+						</abs:parameter>
+					</abs:parameterList>
+				</abs:setParameters>
+			</abs:action>				
+		</abs:actionMenuItem>
+		<abs:actionMenuItem>
+			<abs:caption>
+				<abs:literalText value="Jobs Adapt menu"/>
+			</abs:caption>
+			<abs:action>
+				<abs:openAdaptMenu configName="Jobs"/>
+			</abs:action>
+		</abs:actionMenuItem>
+		
+		<!--
+		<abs:actionMenuItem>
+			<abs:caption>
+				<abs:literalText value="sub menu"/>
+			</abs:caption>
+			<abs:action>
+				<abs:actionMenu menuID="mySecondMenu">
+					<abs:actionMenuItem>
+						<abs:caption>
+							<abs:literalText value="Refresh Widget"/>
+						</abs:caption>
+						<abs:action>
+							<abs:setParameters>
+								<abs:parameterList>
+									<abs:parameter name="myParam">
+										<abs:literalText value="another_value"/>
+									</abs:parameter>
+								</abs:parameterList>
+							</abs:setParameters>
+						</abs:action>
+					</abs:actionMenuItem>
+					<abs:actionMenuItem>
+						<abs:caption>
+							<abs:literalText value="Refresh Widget again"/>
+						</abs:caption>
+						<abs:action>
+							<abs:setParameters>
+								<abs:parameterList>
+									<abs:parameter name="myParam">
+										<abs:literalText value="yet_another_value"/>
+									</abs:parameter>
+								</abs:parameterList>
+							</abs:setParameters>
+						</abs:action>
+					</abs:actionMenuItem>
+				</abs:actionMenu>
+			</abs:action>
+		</abs:actionMenuItem>
+		-->
+		
+	</abs:actionMenu>
+	</cellAction>
+</displayColumn>
+
+</EntityListWidget>

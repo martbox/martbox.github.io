@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+xmlns="http://www.bond.co.uk/JSPInstallWidget_1.0"
+xmlns:abstract="http://www.bond.co.uk/AbstractXMLWidget_1.0"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.bond.co.uk/JSPInstallWidget_1.0" 
+elementFormDefault="qualified" 
+version="1.0">
+<xsd:import namespace="http://www.bond.co.uk/AbstractXMLWidget_1.0" schemaLocation="AbstractXMLWidget_1.0.xsd"></xsd:import>
+
+
+<xsd:element name="JSPInstallWidget" >
+	<xsd:annotation>
+    	<xsd:documentation>
+    	This describes installation details for a jsp widget.
+    	</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+    	<xsd:complexContent>
+    		<xsd:extension base="abstract:AbstractXMLWidgetType">
+    			<xsd:sequence>
+					<xsd:element name="jspFileName" minOccurs="1" maxOccurs="1">							
+                            <xsd:annotation>
+                            	<xsd:documentation>Specify the .jsp filename only, not full path (e.g. my-widget.jsp)</xsd:documentation>
+                            </xsd:annotation>
+                            <xsd:simpleType>
+								<xsd:restriction base="xsd:string">
+						  			<xsd:pattern value="([^\\/:*?&quot;&lt;&gt;|]+)((\.jsp)|(\.JSP))"></xsd:pattern>
+								</xsd:restriction>
+							</xsd:simpleType>
+					</xsd:element>
+				</xsd:sequence>
+    		</xsd:extension>
+    	</xsd:complexContent>		
+	</xsd:complexType>
+</xsd:element>
+
+
+
+</xsd:schema>

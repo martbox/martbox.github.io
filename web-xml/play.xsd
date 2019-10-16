@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+xmlns="myNS"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="myNS" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<xs:element name="list">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="item" type="itemType" minOccurs="1" maxOccurs="3"></xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+
+<xs:complexType name="itemType">
+<xs:attribute use="required" name="label" type="xs:string">
+</xs:attribute>
+</xs:complexType>
+
+
+</xs:schema>

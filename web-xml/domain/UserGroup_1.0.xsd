@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Schema defining UserGroupName simple type giving 
+possible user group names for a particular Adapt domain.
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.bond.co.uk/UserGroup_1.0" elementFormDefault="qualified" version="1.0">
+	<xsd:simpleType name="UserGroupName">
+<xsd:annotation>
+   	<xsd:documentation>
+   	 Simple type restricted to possible user group names for a particular domain
+   	</xsd:documentation>
+   </xsd:annotation>
+		<xsd:restriction base="xsd:string">
+
+<xsd:enumeration value="6624818"/>
+<xsd:enumeration value="6624832"/>
+<xsd:enumeration value="6624877"/>
+<xsd:enumeration value="6624974"/>
+<xsd:enumeration value="6624983"/>
+<xsd:enumeration value="6624993"/>
+<xsd:enumeration value="6625002"/>
+<xsd:enumeration value="BondAU"/>
+<xsd:enumeration value="BondIntPLC"/>
+<xsd:enumeration value="BondUK"/>
+<xsd:enumeration value="BondUS"/>
+<xsd:enumeration value="GroupTasksU1"/>
+<xsd:enumeration value="IT"/>
+<xsd:enumeration value="Pinnacle"/>
+<xsd:enumeration value="SecretAssignments"/>
+<xsd:enumeration value="Webrecruit"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link type="text/css" rel="stylesheet" href="style.css" />
+<link type="text/css" rel="stylesheet" href="xonomy.css"/>
+</head>
+<body>
+<div id="editor" class="editorPane"></div>
+<script src="../lib/jquery-1.12.0/jquery.js" ></script>
+<script src="mbx-xonomy.js" ></script>
+<script src="xs-docspec.js" ></script>
+<script src="xs-parser.js" ></script>
+
+<script>
+
+/**
+Build and return a xonomy docspec from given xsd content
+*/
+function buildDocSpec(xsdContent) {
+  console.log("Building docspec from xsd..");
+  var xsParser = new XSParser();
+  var docspec = xsParser.parseXSD(xsdContent);
+  console.log("DocSpec built..");
+  console.log(docspec);
+  return docspec;
+}
+
+window.render = function(xmlContent, xsdContent) {
+	var docspec = buildDocSpec(xsdContent);
+  Xonomy.render(xmlContent, document.getElementById("editor"),  docspec);
+}
+
+window.getXML = function() {
+  return Xonomy.harvest();
+}
+
+console.log("loaded xonomy container");
+
+if(window.frameElement.onready)
+   window.frameElement.onready();
+
+</script>
+</body>
+</html>

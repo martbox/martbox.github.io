@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema 
+xmlns="http://www.bond.co.uk/EntityListWidget_1.0"
+xmlns:abstract="http://www.bond.co.uk/AbstractXMLWidget_2.0"
+xmlns:p="http://www.bond.co.uk/PropertyTable_1.0"
+xmlns:tb="http://www.bond.co.uk/WidgetToolbar_1.0"
+xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+targetNamespace="http://www.bond.co.uk/EntityListWidget_1.0" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<!-- schema imports also needed in xml -->
+<xsd:import namespace="http://www.bond.co.uk/AbstractXMLWidget_2.0" schemaLocation="AbstractXMLWidget_2.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/WidgetEntityQuery_1.0" schemaLocation="WidgetEntityQuery_1.0.xsd"></xsd:import>
+<xsd:import namespace="http://www.bond.co.uk/WidgetToolbar_1.0" schemaLocation="WidgetToolbar_1.0.xsd"></xsd:import>
+
+<!-- schema import that is for simple data types only, not elements, so not needed in xml -->
+<xsd:import namespace="http://www.bond.co.uk/PropertyTable_1.0" schemaLocation="../domain/PropertyTable_1.0.xsd"></xsd:import>
+
+
+
+<xsd:complexType name="SelectionTypeType">	
+  	<xsd:attribute name="type" use="required">
+  		<xsd:simpleType>
+  			<xsd:restriction base="xsd:string">
+  				<xsd:enumeration value="NONE"></xsd:enumeration>
+  				<xsd:enumeration value="SINGLE_ROW"></xsd:enumeration>
+  				<xsd:enumeration value="MULTIPLE_ROWS"></xsd:enumeration>
+  			</xsd:restriction>
+  		</xsd:simpleType>
+  	</xsd:attribute>
+</xsd:complexType>
+
+
+
+<xsd:group name="ColumnHeaderGroup"> <!-- the options for where column header text can come from -->
+	<xsd:choice>
+		<xsd:element name="propertyAttributeName">
+			<xsd:annotation><xsd:documentation>Indicates the name of a given property.attribute should be used</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="forAttribute" type="p:PropertyAttributeName" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:group ref="abstract:ServerSideAtomicDataTypes_BeforeData"></xsd:group>	
+	</xsd:choice>
+</xsd:group>
+
+
+
+
+<xsd:complexType name="DisplayColumnType">	
+	<xsd:sequence>
+		<xsd:group ref="abstract:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+		<xsd:element name="columnHeader" minOccurs="1" maxOccurs="1">
+			<xsd:annotation><xsd:documentation>
+			Describes where the column header text comes from
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+					<xsd:choice>
+						<xsd:group ref="ColumnHeaderGroup" minOccurs="1" maxOccurs="1"></xsd:group>
+					</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="cellText" minOccurs="0" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>
+			Indicates the cell should show text, and what that text should be.
+			A condition can be specified to determine whether or not this cellText applies.
+			Applicable cellText elements lower down will have higher precidence.
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>						
+					<xsd:group ref="abstract:ServerSideConditionElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+					<xsd:choice>
+						<xsd:group ref="abstract:ServerSideAtomicDataTypes_WithData" minOccurs="1" maxOccurs="1"></xsd:group>
+						<xsd:group ref="abstract:JavascriptFunctionCall_WithData"></xsd:group>
+					</xsd:choice>
+				</xsd:sequence>
+				<xsd:attribute name="showDateAs" use="optional">
+					<xsd:annotation><xsd:documentation>
+						Indicates how to display a date (default if unspecified is DATE)
+					</xsd:documentation></xsd:annotation>
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="DATE"></xsd:enumeration>
+							<xsd:enumeration value="TIME"></xsd:enumeration>
+							<xsd:enumeration value="DATE_TIME"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="cellIcon" minOccurs="0" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>
+			Indicates the cell should show an icon, and what image file to use.
+			A condition can be specified to determine whether or not this cellIcon applies.
+			Applicable cellIcon elements lower down will have higher precidence.
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="abstract:ServerSideConditionElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+				</xsd:sequence>
+				<xsd:attribute name="iconFile" type="abstract:IconFileNameType" use="required">
+				<xsd:annotation><xsd:documentation>
+				The image file to use (file name only e.g. 'myimage.gif') or 'auto' to derive the icon from
+				the cellAction target if applicable.
+				</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="actionReference" minOccurs="0" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>
+			Indicates the reference used by any action assigned to this cell (e.g. entity ID for openEntity)
+			(The default is the primary reference of the row)
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="abstract:ServerSideConditionElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+					<xsd:group ref="abstract:EntityReferenceDataTypes"></xsd:group>
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="cellStyle" minOccurs="0" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>
+			Indicates css style attributes to apply to the cell.
+			A condition can be specified to determine whether or not this cellStyle applies.
+			Applicable cellStyle elements lower down will have higher precidence (replacing earlier elements, not 
+			appending to them)
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="abstract:ServerSideConditionElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>			
+				</xsd:sequence>
+				<xsd:attribute name="style" type="xsd:string" use="required">
+				<xsd:annotation><xsd:documentation>
+				css style attributes to apply
+				</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="cellAction" minOccurs="0" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>
+			Describes an action to carry out when a user clicks/hovers on a cell.
+			A condition can be specified to determine if this cellAction applies.
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:sequence>
+					<xsd:group ref="abstract:ServerSideConditionElement_WithData" minOccurs="0" maxOccurs="1"></xsd:group>
+					<xsd:group ref="CellActionGroup" minOccurs="1" maxOccurs="1"></xsd:group>					
+				</xsd:sequence>
+				<xsd:attribute name="type" use="required">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="LEFT_CLICK"></xsd:enumeration>
+							<xsd:enumeration value="DOUBLE_CLICK"></xsd:enumeration>
+							<xsd:enumeration value="RIGHT_CLICK"></xsd:enumeration>
+							<xsd:enumeration value="HOVER"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>		
+	</xsd:sequence>
+	<xsd:attribute name="width" use="required">
+		<xsd:annotation><xsd:documentation>
+		Describes relative column width, as columns are auto spaced.
+		e.g. If you displayed one EXTRA_LARGE column and 5 VERY_SMALL columns, the VERY_SMALL columns
+		would each take up 10% of the widget width and the EXTRA_LARGE column 50% i.e. 5 times larger.
+		</xsd:documentation></xsd:annotation>
+		<xsd:simpleType>
+			<xsd:restriction base="xsd:string">
+				<xsd:enumeration value="VERY_SMALL"></xsd:enumeration>
+				<xsd:enumeration value="SMALL"></xsd:enumeration>
+				<xsd:enumeration value="MEDIUM"></xsd:enumeration>
+				<xsd:enumeration value="LARGE"></xsd:enumeration>
+				<xsd:enumeration value="EXTRA_LARGE"></xsd:enumeration>
+			</xsd:restriction>
+		</xsd:simpleType>
+	</xsd:attribute>
+	<xsd:attribute name="sortParameter" type="xsd:string" use="optional">
+		<xsd:annotation><xsd:documentation>
+			Enables the sort arrow on this column, and sets the named widget parameter to 'ASCENDING' or 'DESCENDING'
+			which can be used to tailor the query that returns the data.
+		</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+</xsd:complexType>
+
+
+<xsd:group name="CellActionGroup">
+	<xsd:choice>
+		<xsd:group ref="abstract:ActionTypesGroup_WithData" minOccurs="1" maxOccurs="1"></xsd:group>
+		<xsd:element name="openPreviewWidget">
+			<xsd:complexType>
+				<xsd:attribute name="widgetName" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+		<xsd:element name="openInlineWidget">
+			<xsd:complexType>
+				<xsd:attribute name="widgetName" type="xsd:string" use="required"></xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:choice>
+</xsd:group>
+
+	
+
+
+<xsd:element name="EntityListWidget" >
+	<xsd:annotation><xsd:documentation>
+	Specifies a widget which fetches a list of entity data and presents it in a table.
+	A toolbar can be configured to show controls at the top of the widget, which change widget parameters.
+	These parameters can be used to filter the data query and alter the presentation of results in the table.
+	Different actions can be configured for when a user clicks on data, for example showing a sub widget or launching an entity.
+	</xsd:documentation></xsd:annotation>
+    <xsd:complexType>
+    			<xsd:sequence>
+    					<xsd:group ref="abstract:WidgetPropertiesElement"></xsd:group>
+    					<xsd:group ref="abstract:ParameterProcessingElement" minOccurs="0" maxOccurs="unbounded"></xsd:group>
+    					<xsd:group ref="tb:ToolBarElement" minOccurs="0" maxOccurs="1"></xsd:group>
+						<xsd:element name="selectionType" type="SelectionTypeType" minOccurs="0" maxOccurs="1" >
+							<xsd:annotation><xsd:documentation>Indicates the row selection mode</xsd:documentation></xsd:annotation>
+						</xsd:element>
+						<xsd:element name="defaultSubWidget" minOccurs="0" maxOccurs="1">
+							<xsd:annotation><xsd:documentation>
+							Specifies the default widget used when openning a sub widget
+							</xsd:documentation></xsd:annotation>
+							<xsd:complexType>
+								<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="defaultPreviewWidget" minOccurs="0" maxOccurs="1">
+							<xsd:annotation><xsd:documentation>
+							Specifies the default widget used when openning a preview widget
+							</xsd:documentation></xsd:annotation>
+							<xsd:complexType>
+								<xsd:attribute name="name" type="xsd:string" use="required"></xsd:attribute>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:choice> <!-- xml specifying tabular data source -->
+							<xsd:group ref="eq:EntityQueryElement"></xsd:group>
+						</xsd:choice>
+						<xsd:element name="displayColumn" type="DisplayColumnType" minOccurs="1" maxOccurs="unbounded">
+							<xsd:annotation><xsd:documentation>
+							Describes if and how a data column and it's header are displayed
+							</xsd:documentation></xsd:annotation>
+						</xsd:element>
+						<xsd:group ref="tb:ToolBarElement" minOccurs="0" maxOccurs="1"></xsd:group>
+				</xsd:sequence>	
+	</xsd:complexType>
+</xsd:element>
+
+
+
+</xsd:schema>

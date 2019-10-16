@@ -1,0 +1,37 @@
+
+
+hmmmm good article about script loaders..
+https://msdn.microsoft.com/en-us/magazine/hh227261.aspx
+
+Best approach seems to be to minify and concat all scripts then bottom load them all in one request.
+This isn't helpful if you don't actually need everything, or you're pulling in external 3rd party scripts to minimise requests
+to the server you pay for.
+ 
+=====
+ 
+why not also have an online service that takes a list of text resource urls (bundles),
+loads, compiles (.less), minifies (js/html), concats and returns the built response.
+
+##http://thing.I.wanted/text.resource##length##
+followed by text derived from text.resource
+
+The client loader could pass a string id that the built response could be cached against server side. 
+
+The loader client could split the response text into the seperate resources
+
+what do I need now, what could I pre-fetch now??
+
+=====
+
+cross domain js files..
+Could be loaded with script tag?
+array of resources split into synchronously processed async batches..
+local, local, remote, remote, local, local
+would be processed in 3 batches..
+local, local : async  \
+remote, remote : async } 3 batches processed one at a time
+local, local : async  /
+
+=====
+* 
+* css and html view could be evaluated and a styling 'namespace-class' replaced with a given name :)

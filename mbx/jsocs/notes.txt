@@ -1,0 +1,117 @@
+JSOCS / Types
+
+27/04/2017
+
+I'm thinking it's useful to use as a shorthand for generating json-schema, because that's getting better adoption now.
+So a json-schema generator might be more useful to make next..
+
+======================
+
+Original blurb...
+
+xml schema has.. ns prefix / ns name / location url
+and nsA.type references
+
+jsocs has schemaId.type
+
+a schema contains types
+
+
+var schemaObject1 = {
+jsocs_ns_prefixA : {namespace:"schema A namespace", url:"default url to look for it"},
+jsocs_ns_prefixB : {in line schema for prefixB},
+
+ns:"namespace for this schema",
+desc:"description of this schema",
+
+A_num : null //number with no default
+A_num : 123, //number with default value 123
+A_max : 1234,
+A_min : 0,
+A_desc : "description of A",
+
+Simple types, just use property names matching suffixes used above..
+var myNumber = {
+  id : "to re-use this type on another field",
+  req : true, (default is false / optional)
+  num : 122.34
+  precision : 2, //decimal places
+  min : 0,
+  max : 100,
+  enum : [23, 56, 78]
+}
+
+B_bool : true,  //boolean defaulting to true (default is false)
+
+C : "abc", //any string
+C_str : "fgh", //string with default value "fgh"
+C_rgx : "/--regexp--/", //regex string D must match
+C_enum : [list enum of possible values or jsocs types]
+C_req : "required property", //default is opt or optional
+C_id : "id to re-use this type on another property, e.g. TypeC "
+
+//chain modifiers together and specify their values in order in string array
+C_id_str_req_enum : ["myStringType", "defautlVal", "val1,val2,val3"]
+
+var myString = {
+  req : true, (default is false / optional)
+  str : "",
+  max : 12, //characters long
+  min : 10,
+  arr : true //array of
+  rgx : "regex pattern",
+  enum : ["this", "or this", "or that"]
+}
+
+D_ref : "TypeC" //prop named D with type matching TypeC
+D_max : 20 //overrides TypeC max value
+
+jsocs_<typeID> : {  //just specify a re-usable named jsocs type
+}
+
+J : {
+  arr : {of type},
+  min : 0,
+  max : 100
+}
+
+J : {
+  //has no num, str or bool property, its an object
+  a: ...
+  b: ... 
+  c: ..
+}
+
+H_fn : {
+  returns: "nsPrefix.typeID",
+  arg0 : "type def",
+  anyparamname : "type def"
+  arg2_fn : another function Def
+}
+
+//or use array of type refs where the first is the return type..
+
+H_fn : ["return type", "arg1 type", "arg2 type"]
+
+H_fn : [{}, {}, {}] //or specify all these jsocs types in line
+
+
+Similar schema related tools..
+https://www.npmjs.com/package/node-schema
+Lets you specify value validator functions.
+Validate object against json schema.
+https://www.npmjs.com/package/conform
+
+var json_string_of_jsocs = '{"a":"number"}';
+var jsocsObj = JSON.parse(json_string_of_jsocs);
+
+
+//jsocs JJ do they match ;)
+var isValidJSOCS = JSOCS.validate(jsocsObj); //checks the given object is valid jsocs
+
+JSOCS.validate(jsObj, jsocsObj); //validate an object conforms to jsocs
+
+JSOCS.validate(jsObject.a.b, jsocsObj.a.b);  //validate part of an object
+
+var jsocs = JSOCS.fromJSONSchema(json schema)
+var jsonSchema = JSOCS.toJSONSchema(jsocs);

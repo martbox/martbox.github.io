@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+<title>PICU Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<script src="../mbx/console/console.js" ></script>
+
+
+
+<style>
+body, div, td, th {
+  padding: 0px;
+  margin: 0px;
+  border: 0px;
+  font-size: 14px;
+  font-family: helvetica;
+}
+
+div.headers {
+  width: 100%;
+  background-color:#00bfff;
+}
+
+div.headers>div {
+border-style: solid;
+border-color: white;
+border-width: 0px 0px 2px 2px;
+padding: 2px 5px 2px 5px;
+display: inline-block;
+}
+
+div.headers>div.full {
+  width: 99%;
+  text-align: center;
+}
+
+div.headers>div.half {
+  width: 47.5%;
+}
+
+table.room {
+  width: 100%;
+	padding: 0px;
+	margin: 0px;
+  text-align: center;
+  border-collapse: collapse;
+}
+
+table.room th{
+  padding: 2px;
+}
+
+table.room td{
+  background-color: #fff;
+	padding: 0px 0px 0px 2px;
+	margin: 0px;
+  border: 1px solid #00bfff;
+}
+
+
+table.room td:nth-child(1) { width:8%; }
+table.room td:nth-child(2) { width:32%; }
+table.room td:nth-child(3) { width:8%; }
+table.room td:nth-child(4) { width:8%; }
+table.room td:nth-child(5) { width:8%; }
+table.room td:nth-child(6) { width:16%; }
+table.room td:nth-child(7) { width:16%; }
+
+select {
+  background-color: transparent;
+  border: none;
+}
+
+</style>
+
+</head>
+
+<body onload="loadJS()">
+
+<div class="headers">
+
+<div class="full">
+<h2>PICU</h2>
+</div>
+
+<!-- ko foreach: data.contacts() -->
+<div class="half">
+<span data-bind="text: label"></span>
+<select data-bind="options: $root.fn.getStaffWithRole(role),
+optionsText:'name',
+optionsValue:'id',
+value:staffId">
+</select>
+</div>
+<!-- /ko -->
+
+<div class="full">
+Echo: 1444  Resporatory: 1234
+</div>
+
+<!-- ko foreach: data.rooms() -->
+<div class="full">
+<table class="room">
+
+<thead>
+<tr>
+<th colspan="2" data-bind="text: name"></th>
+<th>Status</th>
+<th>C/R</th>
+<th>Surgeon</th>
+<th>Nurse</th>
+<th>Doctor</th>
+</tr>
+</thead>
+
+<tbody>
+<!-- ko foreach: beds -->
+
+<tr>
+<td data-bind="text: $index()+1"></ td>
+<td >
+<input type="text" data-bind="value: name"></input>
+</td>
+<td>HDU</td>
+<td>GR</td>
+<td>OG</td>
+<td>Jismol</td>
+<td>Abdul</td>
+</tr>
+<!-- /ko -->
+</tbody>
+
+</table>
+</div>
+<!-- /ko -->
+
+<div class="full">
+footer
+</div>
+
+<script src="../mbx/loader/Loader.js" ></script>
+<script >
+
+function loadJS(){
+var jsurls=[
+"testData.js",
+"../lib/jquery-1.12.0/jquery.js",
+"../lib/knockout-3.4.0/knockout.js",
+"controller.js"
+];
+ 
+try {
+  var loader = new mbx.Loader(jsurls);
+  loader.load(function(){
+    //called after all scripts loaded and evaluated
+    start();
+  });
+}
+catch(e) {
+  alert(e);
+}
+}//loadJS()
+
+</script>
+
+</body>
+
+</html>

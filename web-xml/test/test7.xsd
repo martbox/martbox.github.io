@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="myNS" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="myNS" elementFormDefault="qualified" 
+version="1.0">
+
+<xs:element name="root" type="myType">
+</xs:element>
+
+<xs:simpleType name="myType">
+	<xs:restriction base="xs:string">
+		<xs:enumeration value="abc"></xs:enumeration>
+		<xs:enumeration value="def"></xs:enumeration>
+	</xs:restriction>
+</xs:simpleType>
+
+
+</xs:schema>

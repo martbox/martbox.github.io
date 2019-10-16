@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+xmlns="myNS"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+targetNamespace="myNS" 
+elementFormDefault="qualified" 
+version="1.0">
+
+<xs:element name="root" type="rootType">
+</xs:element>
+
+<xs:simpleType name="fruitType">
+<xs:restriction base="xs:string" >
+<xs:pattern value="(apple)|(orange)"></xs:pattern>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:complexType name="rootType">
+<xs:attribute name="fruit" type="fruitType" use="required"></xs:attribute>
+</xs:complexType>
+
+
+
+</xs:schema>

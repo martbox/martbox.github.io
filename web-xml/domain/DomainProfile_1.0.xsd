@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Schema defining DomainProfileName simple type giving possible domain profile names for a particular Adapt domain.
+-->
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.bond.co.uk/DomainProfile_1.0" elementFormDefault="qualified" version="1.0">
+	<xsd:simpleType name="DomainProfileName">
+<xsd:annotation>
+   	<xsd:documentation>
+   	 Simple type restricted to available domain profile names for a particular domain.
+   	</xsd:documentation>
+   </xsd:annotation>
+		<xsd:restriction base="xsd:string">
+
+<xsd:enumeration value="Administrator"/>
+<xsd:enumeration value="CoreProfile"/>
+<xsd:enumeration value="Executive Profile"/>
+<xsd:enumeration value="Interim Profile"/>
+<xsd:enumeration value="Vantage Profile"/>
+<xsd:enumeration value="WebUser"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+</xsd:schema>

@@ -1,0 +1,1 @@
+if(top.testJS2_evaluated) top.testJS3_evaluated = true;

@@ -1,0 +1,15 @@
+<!-- view template used to render editor instances -->
+<div id="xml-editor-{instance}" class="web-xml-editor">
+<button id="save-button-{instance}" title="save xml to local storage within the browser" >Save (within browser)</button>
+&nbsp;
+<button id="download-button-{instance}" title="save xml as local file">Download</button><br/>
+
+<!-- houses xonomy-container.html, with mbx-xonomy.js, xs-docspec.js and xs-parser.js -->
+<iframe id="xonomy-container-{instance}" 
+   name="xonomy-container-{instance}"
+   class="xonomy-container-frame" 
+   src="xonomy-container.html"
+   title="xonomy xml editor instance"   
+   style="min-height:300px;width:100%"
+/>
+<div>

@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+This schema specifies entityQuery elements under the http://www.bond.co.uk/EntityQuery_1.0 namespace.
+-->
+<xsd:schema 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+elementFormDefault="qualified" version="1.0"
+xmlns:p="http://www.bond.co.uk/PropertyTable_1.0"
+xmlns:r="http://www.bond.co.uk/Role_1.0"
+xmlns="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+xmlns:abs="http://www.bond.co.uk/AbstractXMLWidget_2.0"
+targetNamespace="http://www.bond.co.uk/WidgetEntityQuery_1.0">
+
+<xsd:import 
+namespace="http://www.bond.co.uk/AbstractXMLWidget_2.0" 
+schemaLocation="AbstractXMLWidget_2.0.xsd"
+ />
+
+<xsd:import 
+namespace="http://www.bond.co.uk/PropertyTable_1.0" 
+schemaLocation="../domain/PropertyTable_1.0.xsd"
+ />
+ 
+ <xsd:import 
+namespace="http://www.bond.co.uk/Role_1.0" 
+schemaLocation="../domain/Role_1.0.xsd"
+ />
+
+<xsd:simpleType name="SQLIdentifierType">
+<xsd:annotation><xsd:documentation>
+String matching the pattern [a-zA-Z_@#]{1}[a-zA-Z_@#$0-9]* (See http://msdn.microsoft.com/en-us/library/ms175874.aspx)
+</xsd:documentation></xsd:annotation>
+<xsd:restriction base="xsd:string">
+	<xsd:pattern value="[a-zA-Z_@#]{1}[a-zA-Z_@#$0-9]*"></xsd:pattern>
+</xsd:restriction>
+</xsd:simpleType>
+
+<xsd:complexType name="PropertyType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>	
+	<xsd:attribute name="name" type="p:PropertyTableName" use="required">
+		<xsd:annotation><xsd:documentation>
+			Must be a valid entity property table name. 
+		</xsd:documentation></xsd:annotation>	
+	</xsd:attribute>
+	<xsd:attribute name="namedOccurrence" type="p:PropertyOccurenceName" use="optional">
+		<xsd:annotation><xsd:documentation>
+			Limits this property to a given named occurance.
+		</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="PrimaryPropertyType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="PropertyType">	
+			<xsd:sequence>
+				<xsd:group ref="PropertyAttributeElement" minOccurs="0" maxOccurs="unbounded"/>			
+				<xsd:group ref="LinkedPropertyElement" minOccurs="0" maxOccurs="unbounded"/>
+				<xsd:element name="roles" type="RolesType" minOccurs="0" maxOccurs="1">
+					<xsd:annotation><xsd:documentation>
+					Lists the valid roles. Only entities belonging to at least one of these roles will be returned by this query. 
+					</xsd:documentation></xsd:annotation>		
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="referenceAttribute" type="p:PropertyAttributeName" use="optional">
+				<xsd:annotation><xsd:documentation>
+					Identifies the attribute on this property that holds the primary entity reference (defaults to 'REFERENCE')
+				</xsd:documentation></xsd:annotation>
+			</xsd:attribute>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:group name="LinkedPropertyElement">
+	<xsd:sequence>
+		<xsd:element name="linkedProperty" type="LinkedPropertyType">
+			<xsd:annotation><xsd:documentation>
+			Specifies another entity property whose attributes you want to refer to in the query, and which
+			attribute in the parent property refers/links to it.
+			</xsd:documentation></xsd:annotation>
+		</xsd:element>
+	</xsd:sequence>	
+</xsd:group>
+
+<xsd:complexType name="LinkedPropertyType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:complexContent>
+		<xsd:extension base="PropertyType">	
+			<xsd:sequence>
+				<xsd:group ref="PropertyAttributeElement" minOccurs="0" maxOccurs="unbounded"/>				
+				<xsd:element name="if" type="WhereClauseType" minOccurs="0" maxOccurs="1">
+					<xsd:annotation><xsd:documentation>
+						Optional clause that must also be true for data from this property to be included
+					</xsd:documentation></xsd:annotation>
+				</xsd:element>
+				<xsd:group ref="LinkedPropertyElement" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>	
+			<xsd:attribute name="linkedAttribute" type="p:PropertyAttributeName" use="required">
+			<xsd:annotation><xsd:documentation>
+				Indicates the attribute on this property that should match the referringAttribute
+			</xsd:documentation></xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="referringAttribute" type="p:PropertyAttributeName" use="required">
+			<xsd:annotation><xsd:documentation>
+				Indicates the attribute on the parent property that must match the linkedAttribute
+			</xsd:documentation></xsd:annotation>
+			</xsd:attribute>
+			<xsd:attribute name="isMandatory" type="xsd:boolean" use="optional" default="false">
+				<xsd:annotation><xsd:documentation>
+					If set to true then rows will only be returned if a linkedProperty match is found.
+					The default is 'false'
+					(i.e. SQL generated is INNER JOIN rather than LEFT OUTER JOIN)
+				</xsd:documentation></xsd:annotation>
+			</xsd:attribute>
+		</xsd:extension>
+	</xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="DBViewType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:choice minOccurs="1" maxOccurs="unbounded">
+			<xsd:group ref="DBViewPropertyAttributeElement" />
+		</xsd:choice>
+	</xsd:sequence>
+	<xsd:attribute name="entityReferenceColumn" type="xsd:string" use="required">
+		<xsd:annotation><xsd:documentation>
+			Indicates the column that holds the unique entity reference for each row
+		</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+	<xsd:attribute name="name" type="SQLIdentifierType" use="required">
+		<xsd:annotation><xsd:documentation>
+			The name of the database view
+		</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+</xsd:complexType>
+
+<xsd:group name="PropertyAttributeElement">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="propertyAttribute">
+			<xsd:annotation><xsd:documentation>
+			Refers to an attribute on a property table, and uniquely identifies it for use in a 'where' clause or 'dataFields'
+			element further on in the query. 
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:annotation><xsd:documentation>Specifies a property attribute via the 'name' attribute, and requires a ID attribute unique to this query.</xsd:documentation></xsd:annotation>
+				<xsd:attribute name="name" type="p:PropertyAttributeName" use="required">
+					<xsd:annotation><xsd:documentation>
+					Name of the property.attribute that this propertyAttribute element represents  
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="ID" type="SQLIdentifierType" use="required">
+					<xsd:annotation><xsd:documentation>
+					Used to uniquely identify this property.attribute as it relates an entity in the qiery.
+					(Referred to in a where clause element and the dateField element)   
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="readAs" use="optional">
+					<xsd:annotation><xsd:documentation>
+							If this propertyAttribute points to a code/entity ID this attribute will make
+							it point to more specific information about it.
+					</xsd:documentation></xsd:annotation>
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="CODE_DESCRIPTION"></xsd:enumeration>
+							<xsd:enumeration value="ENTITY_CREATED_DATE"></xsd:enumeration>
+							<xsd:enumeration value="ENTITY_DEFAULT_ROLE_ID"></xsd:enumeration>
+							<xsd:enumeration value="ENTITY_DEFAULT_ROLE_NAME"></xsd:enumeration>
+							<xsd:enumeration value="ENTITY_DEFAULT_ROLE_DESCRIPTION"></xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="DBViewPropertyAttributeElement">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="propertyAttribute">
+			<xsd:annotation><xsd:documentation>
+			Refers to an property attribute in a view column, and uniquely identifies it for use in a 'where' clause or 'dataFields'
+			element further on in the query. 
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:attribute name="viewColumnName" type="xsd:string" use="required">
+					<xsd:annotation><xsd:documentation>
+					Name of the column holding the property.attribute value this element represents  
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+				<xsd:attribute name="ID" type="SQLIdentifierType" use="required">
+					<xsd:annotation><xsd:documentation>
+					Used to uniquely identify this property.attribute as it relates to an entity in the qiery.
+					(Referred to in a where clause element and the dateField element)   
+					</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+<xsd:group name="PropertyAttributeRefElement">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="propertyAttributeRef">
+			<xsd:annotation><xsd:documentation>Refers to a previously declared propertyAttribute</xsd:documentation></xsd:annotation>
+			<xsd:complexType>				
+				<xsd:attribute name="REF" type="SQLIdentifierType" use="required">
+					<xsd:annotation><xsd:documentation>Specifies the ID of the propertyAttribute this element refers to</xsd:documentation></xsd:annotation>
+				</xsd:attribute>
+			</xsd:complexType>			
+		</xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+
+<xsd:complexType name="RoleType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:attribute name="name" type="r:RoleName" use="required"></xsd:attribute>
+</xsd:complexType>
+
+
+<xsd:complexType name="RolesType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="role" type="RoleType" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>Must be a valid role name</xsd:documentation></xsd:annotation>
+		</xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+
+
+
+<xsd:group name="OperandsGroup">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:choice>
+		<!-- Reference type -->
+		<xsd:element name="NULL">
+			<xsd:annotation><xsd:documentation>Indicates no data</xsd:documentation></xsd:annotation>
+		</xsd:element>
+		<xsd:group ref="PropertyAttributeRefElement" minOccurs="1" maxOccurs="1" />
+		<xsd:group ref="abs:ServerSideDataGroup_BeforeData"></xsd:group>
+	</xsd:choice>
+</xsd:group>
+
+<xsd:complexType name="GeneralOperatorType">
+<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="PropertyAttributeRefElement" minOccurs="1" maxOccurs="1" />
+		<xsd:group ref="OperandsGroup" minOccurs="1" maxOccurs="1"></xsd:group>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="BetweenOperatorType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="PropertyAttributeRefElement" minOccurs="1" maxOccurs="1" />
+		<xsd:element name="limits" minOccurs="1" maxOccurs="1">
+			<xsd:annotation><xsd:documentation>
+				Must contain two elements indicating the limits between which a propertyAttribute value must fall. 
+			</xsd:documentation></xsd:annotation>
+			<xsd:complexType>
+				<xsd:group ref="OperandsGroup" minOccurs="2" maxOccurs="2"></xsd:group>
+			</xsd:complexType>
+		</xsd:element>		
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="ListOperatorType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:group ref="PropertyAttributeRefElement" minOccurs="1" maxOccurs="1" />
+		<xsd:choice>
+			<xsd:element name="list" minOccurs="1" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>Specifies the list of values the propertyAttribute must appear in</xsd:documentation></xsd:annotation>
+				<xsd:complexType>
+					<xsd:group ref="OperandsGroup" minOccurs="1" maxOccurs="unbounded"></xsd:group>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="attributeQuery" type="AttributeQueryType" minOccurs="1" maxOccurs="1">
+				<xsd:annotation><xsd:documentation>Specifies a query whose first column of results indicates a list of valid attribute values</xsd:documentation></xsd:annotation>
+				<xsd:key name="A_propertyAttributeKey">
+					<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+					xpath="eq:databaseView/eq:propertyAttribute |
+					eq:primaryProperty/eq:propertyAttribute | 
+					eq:primaryProperty/*/eq:propertyAttribute |
+					eq:primaryProperty/*/*/eq:propertyAttribute |
+					eq:primaryProperty/*/*/*/eq:propertyAttribute |
+					eq:primaryProperty/*/*/*/*/eq:propertyAttribute"></xsd:selector>
+					<xsd:field xpath="@ID"></xsd:field>
+				</xsd:key>
+				<xsd:keyref name="A_propertyAttributeKeyRef_dataField" refer="A_propertyAttributeKey">
+					<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0" xpath="eq:dataField/eq:propertyAttributeRef"></xsd:selector>
+					<xsd:field xpath="@REF"></xsd:field>
+				</xsd:keyref>
+				<!-- propertyAttributeRef validates up to 5 levels deep in where clause, using and/or elements -->
+				<xsd:keyref name="A_propertyAttributeKeyRef_where" refer="A_propertyAttributeKey">
+					<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+					xpath="eq:where/*/eq:propertyAttributeRef |
+					eq:where/*/*/eq:propertyAttributeRef |
+					eq:where/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/or/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/and/and/or/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:where/or/and/or/*/*/*/eq:propertyAttributeRef"></xsd:selector>
+					<!-- 
+					4 trailing stars e.g. eq:where/*/*/*/*/eq:propertyAttributeRef would not work
+					because it would allow where/inList/attributeQuery/where/equal/propertyAttributeRef
+					which should refer to a propertyAttribute declared in the attributeQuery instead.
+					 -->
+					<xsd:field xpath="@REF"></xsd:field>
+				</xsd:keyref>
+				<xsd:keyref name="A_propertyAttributeKeyRef_linkedProperty" refer="A_propertyAttributeKey">
+					<xsd:annotation><xsd:documentation>
+					Specifies that propertyAttributeRef @REF up to 5 levels deep under 'if' clause
+					of a linkedProperty element up to 4 levels deep	must refer to a propertyAttribute @ID in the same query
+					</xsd:documentation></xsd:annotation>
+					<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+					xpath="eq:primaryProperty/*/eq:if/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+					eq:primaryProperty/*/*/*/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef"></xsd:selector>
+					<xsd:field xpath="@REF"></xsd:field>
+				</xsd:keyref>
+			</xsd:element>
+		</xsd:choice>	
+	</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:complexType name="WhereClauseType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+			<xsd:sequence>
+				<xsd:group ref="abs:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:choice>
+					<xsd:element name="equal" type="GeneralOperatorType"></xsd:element>
+					<xsd:element name="notEqual" type="GeneralOperatorType"></xsd:element>
+					<xsd:element name="greaterThan" type="GeneralOperatorType"></xsd:element>
+					<xsd:element name="lessThan" type="GeneralOperatorType"></xsd:element>
+					<xsd:element name="greaterOrEqualTo" type="GeneralOperatorType"></xsd:element>
+					<xsd:element name="lessThanOrEqualTo" type="GeneralOperatorType"></xsd:element>
+					<xsd:element name="inList" type="ListOperatorType"></xsd:element>
+					<xsd:element name="notInList" type="ListOperatorType"></xsd:element>
+					<xsd:element name="isBetween" type="BetweenOperatorType"></xsd:element>
+					<xsd:element name="notBetween" type="BetweenOperatorType"></xsd:element>
+				</xsd:choice>
+				<xsd:choice> <!-- chain of and, or a chain of or, or neither. -->
+					<xsd:sequence minOccurs="0">
+						<xsd:element name="and" minOccurs="1" maxOccurs="unbounded" type="WhereClauseType">
+							<xsd:annotation><xsd:documentation>Describes an additional restriction on results returned 
+							i.e. AND (conditions..)	(can be chained with other &lt;and&gt; clauses, 
+							i.e. AND (conditions..) AND (conditions..) AND (conditions..) )</xsd:documentation></xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:sequence minOccurs="0">
+						<xsd:element name="or"  minOccurs="1" maxOccurs="unbounded" type="WhereClauseType">
+							<xsd:annotation><xsd:documentation>Describes an alternative restriction on results returned 
+							i.e. OR (conditions..) (can be chained with other &lt;or&gt; clauses
+							i.e. OR (conditions..) OR (conditions..) OR (conditions..) )</xsd:documentation></xsd:annotation>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:choice>
+			</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="OrderByType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+			<xsd:sequence>
+				<xsd:group ref="abs:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:group ref="PropertyAttributeRefElement" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:attribute name="direction" use="required">
+				<xsd:annotation><xsd:documentation>ASCENDING or DESCENDING ordering direction</xsd:documentation></xsd:annotation>
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="ASCENDING"></xsd:enumeration>
+						<xsd:enumeration value="DESCENDING"></xsd:enumeration>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+			<xsd:attribute name="directionFromWidgetParam" type="xsd:string" use="optional">
+				<xsd:annotation><xsd:documentation>the named widget parameter (if available) must contain text ASCENDING or DESCENDING (overrides 'direction' attribute)</xsd:documentation></xsd:annotation>
+			</xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="DataFieldType">	
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+			<xsd:sequence>
+				<xsd:group ref="abs:ServerSideConditionElement_BeforeData" minOccurs="0" maxOccurs="1"></xsd:group>
+				<xsd:group ref="PropertyAttributeRefElement" minOccurs="1" maxOccurs="1" />
+			</xsd:sequence>
+			<xsd:attribute name="name" use="required" type="SQLIdentifierType">
+				<xsd:annotation><xsd:documentation>Specifies the name used to identify a particular column in the result set</xsd:documentation></xsd:annotation>
+			</xsd:attribute>
+</xsd:complexType>
+
+<xsd:complexType name="PageNavigationType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:attribute name="defaultMaxPerPage" type="xsd:integer" use="required">
+		<xsd:annotation><xsd:documentation>Indicates the maximum results shown per page</xsd:documentation></xsd:annotation>
+	</xsd:attribute>
+</xsd:complexType>
+
+
+
+<xsd:complexType name="EntityQueryType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="primaryProperty" type="PrimaryPropertyType" minOccurs="1" maxOccurs="1"></xsd:element>
+		<xsd:element name="dataField" type="DataFieldType" minOccurs="1" maxOccurs="unbounded">
+			<xsd:annotation><xsd:documentation>Specifies the name of a column in the result set, and which property.attribute is used to obtain data for that column</xsd:documentation></xsd:annotation>			
+		</xsd:element>
+		<xsd:element name="where" minOccurs="0" maxOccurs="1" type="WhereClauseType">			
+		</xsd:element>
+		<xsd:element name="orderBy" minOccurs="0" maxOccurs="unbounded" type="OrderByType">
+			<xsd:annotation><xsd:documentation>Indicates results should be ordered by the named property.attribute.
+			 (Further orderByAttribute elements will also be applied in the order they are given)</xsd:documentation></xsd:annotation>
+		</xsd:element>
+		<xsd:element name="pageNavigation" minOccurs="0" maxOccurs="1" type="PageNavigationType" ></xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="AttributeQueryType">
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY, DON'T REFER TO THIS IN OTHER SCHEMA
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element name="primaryProperty" type="PrimaryPropertyType" minOccurs="1" maxOccurs="1"></xsd:element>
+		<xsd:element name="dataField" type="DataFieldType" minOccurs="1" maxOccurs="1">
+			<xsd:annotation><xsd:documentation>Specifies the name for a column of data in your result set, and which property.attribute is used to obtain data itself</xsd:documentation></xsd:annotation>
+		</xsd:element>
+		<xsd:element name="where" minOccurs="0" maxOccurs="1" type="WhereClauseType">
+		</xsd:element>
+	</xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:element name="entityQuery" type="EntityQueryType" >
+	<xsd:annotation><xsd:documentation>
+		INTERNAL USE ONLY (Other schema should use the group: EntityQueryElement instead)
+	</xsd:documentation></xsd:annotation>
+	<xsd:key name="propertyAttributeKey">
+		<xsd:annotation><xsd:documentation>
+			Specifies all propertyAttribute declared up to 5th level deep must have unique @ID key
+		</xsd:documentation></xsd:annotation>
+		<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+		xpath="eq:databaseView/eq:propertyAttribute |
+		eq:primaryProperty/eq:propertyAttribute | 
+		eq:primaryProperty/*/eq:propertyAttribute |
+		eq:primaryProperty/*/*/eq:propertyAttribute |
+		eq:primaryProperty/*/*/*/eq:propertyAttribute |
+		eq:primaryProperty/*/*/*/*/eq:propertyAttribute"></xsd:selector>
+		<xsd:field xpath="@ID"></xsd:field>
+	</xsd:key>
+	<xsd:keyref name="propertyAttributeKeyRef_dataField" refer="propertyAttributeKey">
+		<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0" xpath="eq:dataField/eq:propertyAttributeRef"></xsd:selector>
+		<xsd:field xpath="@REF"></xsd:field>
+	</xsd:keyref>
+	<xsd:keyref name="propertyAttributeKeyRef_orderBy" refer="propertyAttributeKey">
+		<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0" xpath="eq:orderBy/eq:propertyAttributeRef"></xsd:selector>
+		<xsd:field xpath="@REF"></xsd:field>
+	</xsd:keyref>
+	<xsd:keyref name="propertyAttributeKeyRef_where" refer="propertyAttributeKey">
+		<xsd:annotation><xsd:documentation>
+			Specifies that propertyAttributeRef@REF up to 6 levels deep in where clause
+			must refer to a propertyAttribute@ID in the same query
+		</xsd:documentation></xsd:annotation>
+		<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+		xpath="eq:where/*/eq:propertyAttributeRef |
+		eq:where/*/*/eq:propertyAttributeRef |
+		eq:where/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/or/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/and/and/or/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:where/or/and/or/*/*/*/eq:propertyAttributeRef"></xsd:selector>
+		<!-- 
+		4 trailing stars e.g. eq:where/*/*/*/*/eq:propertyAttributeRef would not work
+		because it would allow where/inList/attributeQuery/where/equal/propertyAttributeRef
+		which should refer to a propertyAttribute declared in the attributeQuery instead.
+		 -->
+		<xsd:field xpath="@REF"></xsd:field>
+	</xsd:keyref>
+	<xsd:keyref name="propertyAttributeKeyRef_linkedProperty" refer="propertyAttributeKey">
+		<xsd:annotation><xsd:documentation>
+		Specifies that propertyAttributeRef @REF up to 5 levels deep under 'if' clause
+		of a linkedProperty element up to 4 levels deep	must refer to a propertyAttribute @ID in the same query
+		</xsd:documentation></xsd:annotation>
+		<xsd:selector xmlns:eq="http://www.bond.co.uk/WidgetEntityQuery_1.0"
+		xpath="eq:primaryProperty/*/eq:if/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/or/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/or/or/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/and/and/*/*/*/eq:propertyAttributeRef |
+		eq:primaryProperty/*/*/*/*/eq:if/and/or/*/*/*/eq:propertyAttributeRef"></xsd:selector>
+		<xsd:field xpath="@REF"></xsd:field>
+	</xsd:keyref>
+</xsd:element>
+
+<xsd:group name="EntityQueryElement">
+	<xsd:annotation><xsd:documentation>
+		Sequence with one 'entityQuery' element for describing how to obtain entity data.
+	</xsd:documentation></xsd:annotation>
+	<xsd:sequence>
+		<xsd:element ref="entityQuery"></xsd:element>
+	</xsd:sequence>
+</xsd:group>
+
+</xsd:schema>

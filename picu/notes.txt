@@ -1,0 +1,8 @@
+PICU Dashboard
+
+To show doctors, surgeons and consultants and which patients they are assigned to.
+Also the rooms and status of the patients in them, and what staff are assigned to them.
+   
+===============================================================================================
+
+TODO / BUGS   (KEY: + todo, * doing, x not do, ? maybe, / done)
