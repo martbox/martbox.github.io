@@ -6,10 +6,10 @@ This function takes an object and returns an object where all properties are mad
 The property names on the returned object match those on the object passed in, and the observables assigned to them are initialised with values from the input object.
 
 **
-[Website](http://martbox.co.uk/mbx/koObservableProps/index.html) | 
+[Website](https://martbox.github.io/mbx/koObservableProps/index.html) | 
 [Github](https://github.com/martbox/koObservableProps) | 
-[Download](http://martbox.co.uk/mbx/koObservableProps/observableProps.js) | 
-[Jasmine tests](http://martbox.co.uk/mbx/koObservableProps/test.html) | 
+[Download](https://martbox.github.io/mbx/koObservableProps/observableProps.js) | 
+[Jasmine tests](https://martbox.github.io/mbx/koObservableProps/test.html) | 
 [License: MIT](http://www.opensource.org/licenses/mit-license.php) | 
 [Author: Martin Armstrong](https://www.linkedin.com/in/martin-armstrong/)
 **

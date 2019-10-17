@@ -9,10 +9,10 @@ You can also make a function wrapper which validates the arguments passed to it 
 The idea here was to allow you to spec a function contract separately from its implementation.
 
 **
-[Website](http://martbox.co.uk/mbx/jsocs/index.html) | 
+[Website](https://martbox.github.io/mbx/jsocs/index.html) | 
 [Github](https://github.com/martbox/jsocs) | 
-[Download](http://martbox.co.uk/mbx/jsocs/jsocs.js) | 
-[Jasmine tests](http://martbox.co.uk/mbx/jsocs/test.html) | 
+[Download](https://martbox.github.io/mbx/jsocs/jsocs.js) | 
+[Jasmine tests](https://martbox.github.io/mbx/jsocs/test.html) | 
 [License: MIT](http://www.opensource.org/licenses/mit-license.php) | 
 [Author: Martin Armstrong](https://www.linkedin.com/in/martin-armstrong/)
 **

@@ -5,10 +5,10 @@
 Tool for loading a group of text resources asynchronously, evaluating js/json and applying css in the page as needed, then running a callback function once all this has been done.
 
 **
-[Website](http://martbox.co.uk/mbx/loader/index.html) | 
+[Website](https://martbox.github.io/mbx/loader/index.html) | 
 [Github](https://github.com/martbox/loader) | 
-[Download](http://martbox.co.uk/mbx/loader/Loader.js) | 
-[Jasmine tests](http://martbox.co.uk/mbx/loader/test.html) | 
+[Download](https://martbox.github.io/mbx/loader/Loader.js) | 
+[Jasmine tests](https://martbox.github.io/mbx/loader/test.html) | 
 [License: MIT](http://www.opensource.org/licenses/mit-license.php) | 
 [Author: Martin Armstrong](https://www.linkedin.com/in/martin-armstrong/)
 **

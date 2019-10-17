@@ -9,10 +9,10 @@ This is a basic in-page console you can show/hide by clicking a yellow button.
 I made this so I could still view console output on mobile devices that don't have one.
 
 **
-[Website](http://martbox.co.uk/mbx/console/index.html) | 
+[Website](https://martbox.github.io/mbx/console/index.html) | 
 [Github](https://github.com/martbox/console) | 
-[Download](http://martbox.co.uk/mbx/console/console.js) | 
-[Jasmine tests](http://martbox.co.uk/mbx/console/test.html) | 
+[Download](https://martbox.github.io/mbx/console/console.js) | 
+[Jasmine tests](https://martbox.github.io/mbx/console/test.html) | 
 [License: MIT](http://www.opensource.org/licenses/mit-license.php) | 
 [Author: Martin Armstrong](https://www.linkedin.com/in/martin-armstrong/)
 **

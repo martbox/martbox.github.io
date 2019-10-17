@@ -5,10 +5,10 @@ This is a tool for replacing string id's in a js object model with actual pointe
 It also works the other way round, replacing object pointers with string id's, useful when serialising to json string.
 
 **
-[Website](http://martbox.co.uk/mbx/jsid/index.html) | 
+[Website](https://martbox.github.io/mbx/jsid/index.html) | 
 [Github](https://github.com/martbox/jsid) | 
-[Download](http://martbox.co.uk/mbx/jsid/jsid.js) | 
-[Jasmine tests](http://martbox.co.uk/mbx/jsid/test.html) | 
+[Download](https://martbox.github.io/mbx/jsid/jsid.js) | 
+[Jasmine tests](https://martbox.github.io/mbx/jsid/test.html) | 
 [License: MIT](http://www.opensource.org/licenses/mit-license.php) | 
 [Author: Martin Armstrong](https://www.linkedin.com/in/martin-armstrong/)
 **
