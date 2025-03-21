@@ -1,5 +1,9 @@
+
+
+console.debug("Redux found: "+!!top.createStore);
 //not an import, Redux is loaded via <script> in the page
-const { createStore } = Redux;
+const createStore = top.createStore;
+
 
 const actionsObj = {} // named Action instances
 

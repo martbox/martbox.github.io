@@ -11,4 +11,5 @@ export default class Action {
     };
     //the reducer for this action to return a new corresponding state 
     this.reducer = reducer;
+   }
 }

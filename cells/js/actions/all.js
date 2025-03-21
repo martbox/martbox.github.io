@@ -1,9 +1,14 @@
-import Action from "./Action.js";
+
 import buttonClicked from "./ButtonClicked.js";
 
 const allActions = [
   buttonClicked
 ];
 
-export default {allActions}
+var actionsObj = {}
+allActions.forEach((action)=>{
+  actionsObj[action.type]=action;
+});
+
+export default actionsObj;
 

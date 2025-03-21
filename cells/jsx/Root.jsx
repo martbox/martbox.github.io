@@ -1,4 +1,4 @@
-Root : (store, actions) => (
+const Root = (store, actions) => (
 <div class="container">
   <div class="row">
     <div class="col-6">
@@ -8,6 +8,10 @@ Root : (store, actions) => (
 	<div class="row">
     <div class="col-6">
       <span>status = {store.button.status}</span><br/>
-      <button class="btn btn-outline-secondary" onClick={actions.buttonClicked.trigger()}">{store.button.label}</button>
+      <button class="btn btn-outline-secondary"
+      onClick={actions.buttonClicked.trigger()}>
+      {store.button.label}
+      </button>
     </div>
-  </div>)
+  </div>
+)
