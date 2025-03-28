@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
    
 });
 
-window.onerror=function(error,src,line,col){
-  console.err(error+" ("+src+":"+line+(col?","+col:"")+")");
+window.onerror=function(msg,src,line,col,error){
+  console.err(msg+" ("+src+":"+line+(col?","+col:"")+")");
 }
 

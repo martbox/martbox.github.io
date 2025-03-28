@@ -1,28 +1,29 @@
+import {createStore} from "https://unpkg.com/redux@5.0.1/dist/redux.browser.mjs"
 
-
-console.debug("Redux found: "+!!top.createStore);
-//not an import, Redux is loaded via <script> in the page
-const createStore = top.createStore;
-
-
-const actionsObj = {} // named Action instances
+var actionsObj = {} // named Action instances
 
 const rootReducer = (state={}, actionEvent) => {
-    if(actionEvent && actionEvent.type!="@@redux/INIT") {
-      return actionsObj[actionEvent.type].reducer(state, actionEvent.change);
+console.debug("roodReducer called with actionEvent.type="+actionEvent.type);
+if(actionEvent && !actionEvent.type.includes("@@redux/INIT")) {
+      if(!!actionsObj[actionEvent.type]) {
+        return actionsObj[actionEvent.type].reducer(state, actionEvent.change);
+      } else {
+        console.error("Unknown Action: "+actionEvent.type);
+        return state;
+      }
     }
-    else
+    else {
+      console.debug("roodReducer returning state unchanged");
       return state;
+    }
 };
 
 const reduxStore = createStore(rootReducer);
 
 export default {
   store: reduxStore, 
-  registerActions: (actions)=>{
-    actions.forEach((action)=>{
-       actionsObj[action.type] = action;
-    });
+  setActions: (actions)=>{
+    actionsObj = actions;
   },
   addAction: (action)=>{
     actionsObj[action.type] = action;

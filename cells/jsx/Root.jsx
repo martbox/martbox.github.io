@@ -1,3 +1,5 @@
+console.debug("Loading Root view");
+
 const Root = (store, actions) => (
 <div class="container">
   <div class="row">
@@ -5,7 +7,7 @@ const Root = (store, actions) => (
       <h2 class="pt-2">{store.title}</h2>
     </div>
   </div>
-	<div class="row">
+  <div class="row">
     <div class="col-6">
       <span>status = {store.button.status}</span><br/>
       <button class="btn btn-outline-secondary"
@@ -15,3 +17,5 @@ const Root = (store, actions) => (
     </div>
   </div>
 )
+
+console.debug("Root view loaded");
