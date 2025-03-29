@@ -3,16 +3,16 @@
 //import {createRoot} from "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
 
 
-import {} from "https://esm.sh/react@19.1.0/es2022/react.development.mjs";
-import {} from "https://esm.sh/react-dom@19.1.0/es2022/react-dom.development.mjs";
+//import React from "https://esm.sh/react@19.1.0/es2022/react.development.mjs";
+//import {} from "https://esm.sh/react-dom@19.1.0/es2022/react-dom.development.mjs";
 //import * from "https://esm.sh/react-dom@19.1.0/es2022/client.development.mjs";
-import ReactDOM from "https://esm.sh/react-dom@19.1.0/es2022/client.development.mjs";
+//import ReactDOM from "https://esm.sh/react-dom@19.1.0/es2022/client.development.mjs";
 
 
 
 
-//import React from "https://esm.sh/react@19/?dev"
-//import ReactDOMClient from "https://esm.sh/react-dom@19/client?dev"
+import React from "https://esm.sh/react@19/?dev"
+import ReactDOM from "https://esm.sh/react-dom@19/client?dev"
 
 import redux from "./redux-store.js";
 import actions from "./actions/all.js";
