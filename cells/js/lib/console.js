@@ -103,6 +103,9 @@ top.console.err = top.console.error;
 top.console.warn = function(msg, e){
   top.console.log("WARN: "+msg, e);
 };
+top.console.info = function(msg, e){
+  top.console.log("INFO: "+msg, e);
+};
 top.console.debug = function(msg){
   top.console.log("DEBUG: "+msg);
 };
