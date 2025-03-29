@@ -2,31 +2,42 @@
 //import {} from "https://unpkg.com/react@18.3.1/umd/react.production.min.js"
 //import {createRoot} from "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
 
-import React from "https://esm.sh/react@19/?dev"
-import ReactDOMClient from "https://esm.sh/react-dom@19/client?dev"
+
+import {} from "https://esm.sh/react@19.1.0/es2022/react.development.mjs";
+import {} from "https://esm.sh/react-dom@19.1.0/es2022/react-dom.development.mjs";
+//import * from "https://esm.sh/react-dom@19.1.0/es2022/client.development.mjs";
+import ReactDOM from "https://esm.sh/react-dom@19.1.0/es2022/client.development.mjs";
+
+
+
+
+//import React from "https://esm.sh/react@19/?dev"
+//import ReactDOMClient from "https://esm.sh/react-dom@19/client?dev"
 
 import redux from "./redux-store.js";
 import actions from "./actions/all.js";
 
+console.debug("ReactDOM is a "+typeof ReactDOM);
+console.debug(Object.keys(ReactDOM));
+
 redux.setActions(actions);
 
-const root = ReactDOMClient.createRoot(document.getElementById('root'));
+const reactDomRoot = ReactDOM.createRoot(document.getElementById('root'));
 
-const myRender = () => {
+const renderRoot = () => {
     console.debug("Running myRender()");
-    if(typeof Root === "function") {
+    if(typeof window.Root === "function") {
        console.debug("rendering Root view");
-      root.render(
-        Root(redux.store.getState(), actions)
+      reactDomRoot.render(
+        window.Root(redux.store.getState(), actions)
       );
     } else {
       console.error("Root view not found or not a function");
     }
 };
 
-redux.store.subscribe(myRender);
-
-myRender();
+redux.store.subscribe(renderRoot);
+window.renderRoot = renderRoot;
 
 console.debug("app loaded");
 

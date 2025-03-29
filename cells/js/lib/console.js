@@ -131,5 +131,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 window.onerror=function(msg,src,line,col,error){
   console.err(msg+" ("+src+":"+line+(col?","+col:"")+")");
+
+  if(error && error.stack) {
+    console.err("   stack:"+error.stack);
+  }
+
 }
 

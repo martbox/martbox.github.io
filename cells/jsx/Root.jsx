@@ -1,6 +1,6 @@
 console.debug("Loading Root view");
 
-const Root = (store, actions) => (
+window.Root = (store, actions) => (
 <div class="container">
   <div class="row">
     <div class="col-6">
@@ -16,6 +16,9 @@ const Root = (store, actions) => (
       </button>
     </div>
   </div>
+</div>
 )
+
+window.renderRoot();
 
 console.debug("Root view loaded");
