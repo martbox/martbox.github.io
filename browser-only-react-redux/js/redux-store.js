@@ -1,4 +1,5 @@
 import {createStore} from "https://unpkg.com/redux@5.0.1/dist/redux.browser.mjs"
+import initialState from "./initial-state.js"
 
 var actionsObj = {} // named Action instances
 
@@ -13,12 +14,12 @@ if(actionEvent && !actionEvent.type.includes("@@redux/INIT")) {
       }
     }
     else {
-      console.debug("roodReducer returning state unchanged");
+      console.debug("rootReducer returning state unchanged");
       return state;
     }
 };
 
-const reduxStore = createStore(rootReducer);
+const reduxStore = createStore(rootReducer, initialState);
 
 export default {
   store: reduxStore, 

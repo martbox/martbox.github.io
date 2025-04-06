@@ -12,6 +12,7 @@
 
 
 import React from "https://esm.sh/react@19/?dev"
+window.React = React
 import ReactDOM from "https://esm.sh/react-dom@19/client?dev"
 
 import redux from "./redux-store.js";

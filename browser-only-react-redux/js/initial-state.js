@@ -1,5 +1,5 @@
 export default {
-  title:"App Title"
+  title:"App Title",
   button : {
     label: "my button",
     status: false

@@ -9,9 +9,9 @@ window.Root = (store, actions) => (
   </div>
   <div class="row">
     <div class="col-6">
-      <span>status = {store.button.status}</span><br/>
+      <span>status = {store.button.status?"TRUE":"FALSE"}</span><br/>
       <button class="btn btn-outline-secondary"
-      onClick={actions.buttonClicked.trigger()}>
+      onClick={actions.buttonClicked.trigger}>
       {store.button.label}
       </button>
     </div>
