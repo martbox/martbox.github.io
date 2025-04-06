@@ -1,0 +1,50 @@
+
+
+
+
+============
+
+react redux browser based ui
+
+Reading local file with JavaScript in browser..
+https://www.geeksforgeeks.org/how-to-read-a-local-text-file-using-javascript/
+
+
+UI components
+============
+
+Cells class structure specifying schema and relevant ui options for them.
+
+Main view with + button to add a root cell.
+
+Add a root cell popup.
+Popup view model.
+Popup view.
+Updates and renders main view on save.
+
+Cells view state model, which are expanded/collapsed.
+Cells view. Jsx, css
+
+Show parent cells
+Click to edit cell.
+Add new linked cell button on edit pop.
+Show linked cells horizontally
+Show linked cells virtcally
+Expand/collapse cells
+
+======
+
+So a cell type has…
+
+Type name
+type icon
+type colour
+Linked cell types[]: {label, type, collapsed?, show list inline or vertically.
+
+Common Instance Fields: name, description, colour, icon, links[]: for slack/email/confluence etc {label,url}
+
+
+
+
+
+
